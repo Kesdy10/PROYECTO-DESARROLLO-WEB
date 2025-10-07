@@ -1,0 +1,146 @@
+body {
+    font-family: "Showcard Gothic", sans-serif;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: white;
+}
+
+.form{
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    display: block; 
+    margin: 0 auto;
+}
+
+header {
+    background-color: yellowgreen;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    gap: 20px;
+}
+
+body header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.body-login header {
+    background-color: yellowgreen;
+    color: black;
+    text-align: center;
+    padding: 20px;
+    width: 100%;   
+}
+
+.body-login{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: auto;
+    margin: 0;
+    min-height: 100vh;
+    background-color: white;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.izquierda, .derecha {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.izquierda h1 {
+    font-family: 'Showcard Gothic', sans-serif; 
+    margin:0;
+    font-size: 65px;
+    margin: 0;
+    color: black;
+}
+
+.izquierda img {
+    width: 65px;
+    height: 90px;
+}
+
+.derecha img {
+    width: 65px;
+    height: 65px;
+}
+
+main {
+    flex: 1;
+    min-height: 60vh;
+    padding: 20px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.contenedor {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.contenedor img {
+    width: 200px;
+    height: 200px;
+}
+
+.contenedor2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px;
+    text-align: center;
+}
+
+.contenedor2 img {
+    width: 220px;
+    height: 108px;
+}
+
+footer {
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 15px;
+}
+
+.body-login footer {
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    width: 100%;
+}
+
+.cuenta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.perfil{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

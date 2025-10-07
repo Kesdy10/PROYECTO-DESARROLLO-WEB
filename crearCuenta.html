@@ -1,0 +1,74 @@
+<!-- cuenta.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi Cuenta - Don Gato</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+    <header>
+        <h1 style="font-size: 65px; font-family: 'Showcard Gothic', sans-serif; margin:0; width: 100%; text-align: center;">
+            DON GATO
+        </h1>
+    </header>
+
+<main class="perfil">
+    <br>
+    <h1>Crear una Cuenta</h1><br>
+    <form class="formulario-perfil" style="display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; row-gap: 25px; align-items: center;">
+
+        <div style="display:flex; align-items:center; gap:8px;">
+            <label style="font-size:22px; width:120px;" for="Apellidos">Apellidos:</label>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="Apellidos" placeholder="Escribe aqui">
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px;">
+            <label style="font-size:22px; width:120px;" for="Nombres">Nombres:</label>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="Nombres" placeholder="Escribe aqui">
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px;">
+            <label style="font-size:22px; width:120px;" for="Correo">Correo:</label>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="Correo" placeholder="Escribe aqui">
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px;">
+            <label style="font-size:22px; width:120px;" for="Telefono">Teléfono:</label>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="Telefono" placeholder="Escribe aqui">
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px;">
+            <label style="font-size:22px; width:120px;" for="fecha">Fecha de nacimiento:</label>
+            <input style="font-size:18px; flex:1;" type="date" id="fecha" name="fecha" value="2004-03-08">
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px;">
+            <label style="font-size:22px; width:120px;">Género:</label>
+            <div style="display:flex; gap:15px; flex:1;">
+                <label style="font-size:22px; color:grey;"><input type="radio" name="Genero" value="M"> Masculino</label>
+                <label style="font-size:22px; color:grey;"><input type="radio" name="Genero" value="F"> Femenino</label>
+            </div>
+        </div>
+
+        <div style="grid-column:1 / -1; display:flex; align-items:center; gap:8px;">
+            <label style="font-size:22px; width:120px;" for="direccion">Dirección:</label>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="direccion" placeholder="Escribe aqui">
+        </div> <br>
+
+        <div style="display:flex; justify-content:flex-end; gap:15px; margin-top:20px;">
+            <button style="font-size:22px; background-color:rgb(100, 243, 100); border:none; padding:8px 20px; cursor:pointer;" type="button">Crear cuenta</button>
+            <button style="font-size:22px; background-color:rgb(231, 80, 80); border:none; padding:8px 20px; cursor:pointer;" type="button"
+            onclick="window.location.href='login.html';">Salir</button>
+        </div><br>
+
+    </form>
+</main>
+
+
+  <footer>
+    &copy; 2025 Don Gato. Todos los derechos reservados.
+  </footer>
+  <script src="js/script.js"></script>
+</body>
+</html>

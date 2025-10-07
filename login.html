@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang = "es">
+<head>
+    <meta charset ="UTF-8">
+    <title> Bienvenido a Don Gato </title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="icon" href="img/encabezado/logo.jpeg">
+</head>
+<body class="body-login">
+    <header>
+        <h1 style="font-size: 65px; font-family: 'Showcard Gothic', sans-serif; margin:0; width: 100%;">
+            DON GATO
+        </h1>
+    </header>
+<main>
+    <div class="form">        
+        <h1 > Inicio de sesion </h1>
+            <div class="usuario" style="font-size: 35px;">
+                <input type="text" style="font-size: 20px;" placeholder="Usuario" name="usuario" required>
+            </div>
+            <div class="user" style="font-size: 25px; text-align:center;">
+                <input type="password" id="contrasena" style="font-size: 20px; margin-bottom: 30px;" placeholder="Contraseña" name="contrasena" required>
+            </div>
+            <div style="font-size: 25px; text-align:center;"> <input type="checkbox" onclick="togglePassword()">  Mostrar contraseña </div>  
+
+            
+        <br>
+        <div>
+            <a href="index.html">
+                <button type="button" style="font-size: 25px; margin-bottom: 80px; background-color: yellowgreen;"> Ingresar </button>
+            </a>
+        </div>
+        <div>
+            <h1 style ="font-size: 20px;"> No tienes una cuenta? </h1>
+            <a href="crearCuenta.html">
+                <button type="button" style="font-size: 25px; margin-bottom: 30px; background-color: cadetblue;"> Crear una cuenta </button>
+            </a>
+        </div>
+        </form>
+    </div>
+</main>
+
+    <footer>
+        &copy; 2025 Don Gato. Todos los derechos reservados.
+    </footer>
+<script src="js/script.js"></script>
+</body>
+</html>

@@ -29,26 +29,45 @@
     </div>
 </header>
 
-    <main>
-        <div class="cuenta">
-            <br>        
-            <h1>Carrito</h1>
-                <div>
-                    <input style="font-size: 22px;" type="text" name="nombre" placeholder="Nombre" required>
-                </div><br>
-                <div>
-                    <input style="font-size: 22px;" type="text" name="correo" placeholder="Correo" required>
-                </div><br>
-                <div>
-                    <textarea style="font-size: 22px; padding: 8px; margin-bottom: 20px; text-align: left; height: 120px; resize: none;" name="mensaje" placeholder="Mensaje" required></textarea>
-                </div><br>
-                <button style="font-size: 22px; margin-bottom: 30px; padding: 5px; width: 275px;" type="submit">Enviar</button>
+<main>
+    <div class="cuenta">
+        <br>
+        <h1>Carrito</h1>
+        <!-- Tabla de productos en el carrito -->
+        <table style="width:100%; font-size:18px; margin-bottom:20px;">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody id="carrito-productos">
+                <!-- Los productos se agregan dinámicamente con JS -->
+            </tbody>
+        </table>
+        <!-- Dirección del cliente -->
+        <h2>Dirección de envío</h2>
+        <div>
+            <input style="font-size: 18px;" type="text" name="direccion" id="direccion" placeholder="Dirección completa" required>
+        </div><br>
+        <div>
+            <input style="font-size: 18px;" type="text" name="telefono" id="telefono" placeholder="Teléfono" required>
+        </div><br>
+        <!-- Resumen de factura -->
+        <h2>Resumen</h2>
+        <div id="resumen-factura" style="font-size:18px; margin-bottom:20px;">
+            <!-- Aquí se muestra el total y detalles -->
         </div>
-    </main>
+        <!-- Botón para confirmar pedido -->
+        <button style="font-size: 22px; margin-bottom: 30px; padding: 5px; width: 275px;" id="confirmar-pedido">Confirmar pedido (Pago contra entrega)</button>
+    </div>
+</main>
 
 <footer>
     &copy; 2025 Don Gato. Todos los derechos reservados.
 </footer>
-    <script src="js/script.js"></script>
+<script src="js/script.js"></script>
 </body>
 </html>

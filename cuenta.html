@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <title>Mi Cuenta - Don Gato</title>
   <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/datos.css">
 </head>
 <body>
   <header>
@@ -31,7 +32,7 @@
 <main class="perfil">
     <br>
     <h1>Mi Cuenta</h1><br>
-    <form class="formulario-perfil" style="display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; row-gap: 25px; align-items: center;">
+    <form class="formulario-perfil">
 
         <div style="display:flex; align-items:center; gap:8px;">
             <label style="font-size:22px; width:120px;" for="Apellidos">Apellidos:</label>
@@ -60,7 +61,7 @@
 
         <div style="display:flex; align-items:center; gap:8px;">
             <label style="font-size:22px; width:120px;">Género:</label>
-            <div style="display:flex; gap:15px; flex:1;">
+            <div class="genero-group">
                 <label style="font-size:22px; color:grey;"><input type="radio" name="Genero" value="M"> Masculino</label>
                 <label style="font-size:22px; color:grey;"><input type="radio" name="Genero" value="F"> Femenino</label>
             </div>
@@ -71,9 +72,9 @@
             <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="direccion">
         </div> <br>
 
-        <div style="display:flex; justify-content:flex-end; gap:15px; margin-top:20px;">
+        <div class="botones-perfil">
             <button style="font-size:22px; background-color:rgb(100, 243, 100); border:none; padding:8px 20px; cursor:pointer;" type="button">Actualizar</button>
-            <button style="font-size:22px; background-color:rgb(231, 80, 80); border:none; padding:8px 20px; cursor:pointer;" type="button"
+            <button style="font-size:22px; background-color:rgb(231, 80, 80); border:none; padding:8px 20px; cursor:pointer;"
             onclick="if(confirm('¿Estas seguro que quieres borrar la cuenta?')){alert('Cuenta borrada exitosamente')}">Borrar</button>
         </div><br>
 

@@ -1,9 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask import request, jsonify
+from flask import send_from_directory
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 # Conexión a Railway PostgreSQL
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
@@ -91,7 +92,7 @@ def borrar_usuario(id):
 
 @app.route('/')
 def home():
-    return "¡API Don Gato corriendo en Railway!"
+    return send_from_directory('ruta/a/tu/login', 'login.html')
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

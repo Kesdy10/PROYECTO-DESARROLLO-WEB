@@ -13,6 +13,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+print("Conectado a la base de datos:", db.engine.url)
 
 # Modelo de Usuario
 class Usuario(db.Model):
@@ -87,3 +88,5 @@ def borrar_usuario(id):
     db.session.delete(usuario)
     db.session.commit()
     return jsonify({'mensaje': 'Usuario borrado'})
+
+

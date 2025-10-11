@@ -3,6 +3,14 @@ import os
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
+# Prevenir caché en desarrollo
+@app.after_request
+def after_request(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
 # Ruta para servir archivos estáticos explícitamente
 @app.route('/static/<path:filename>')
 def static_files(filename):

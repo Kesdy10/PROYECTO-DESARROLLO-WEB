@@ -1,10 +1,16 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
+import os
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
+# Ruta para servir archivos estáticos explícitamente
+@app.route('/static/<path:filename>')
+def static_files(filename):
+    return send_from_directory(app.static_folder, filename)
+
 # VENTANAS
 @app.route('/')
-def login():
+def home():
     return render_template('ventanas/login.html')
 
 @app.route('/login.html')

@@ -4,7 +4,6 @@
     width: 1125px;
     height: 1140px;
     padding: 50px;
-    
   }
   
   ul, li {
@@ -55,7 +54,6 @@
   }
   
   .carru li a{
-    left: 10cm;
     color: rgba(247, 3, 3, 0);
     text-decoration: none;
     position: relative;

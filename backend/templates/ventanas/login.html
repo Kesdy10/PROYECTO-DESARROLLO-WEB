@@ -3,8 +3,8 @@
 <head>
     <meta charset ="UTF-8">
     <title> Bienvenido a Don Gato </title>
-    <link rel="stylesheet" href="/static/css/estilos.css">
-    <link rel="icon" href="/static/img/encabezado/logo.jpeg">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}">
 </head>
 <body class="body-login">
     <header>
@@ -43,6 +43,6 @@
     <footer>
         &copy; 2025 Don Gato. Todos los derechos reservados.
     </footer>
-<script src="/static/js/script.js"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

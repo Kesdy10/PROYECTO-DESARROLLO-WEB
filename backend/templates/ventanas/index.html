@@ -5,26 +5,26 @@
     <meta charset="UTF-8">
     <title>Don Gato</title>
     <link rel="stylesheet" href="/static/css/estilos.css">
-    <link rel="icon" href="/static/img/Encabezado/logo.jpeg">
+    <link rel="icon" href="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}">
 </head>
 <body>
     <!-- ENCABEZADO -->
     <header>
         <div class="izquierda">
             <a href="index.html">
-                <img src="/static/img/Encabezado/logo.jpeg" alt="Logo">
+                <img src="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}" alt="Logo">
             </a>
             <h1>DON GATO</h1>
         </div>
         <div class="derecha">
             <a href="cuenta.html" class="cuenta">
-                <img src="/static/img/Encabezado/perfil.png" alt="Cuenta">
+                <img src="{{ url_for('static', filename='img/encabezado/perfil.png') }}" alt="Cuenta">
             </a>
             <a href="contacto.html" class="contacto">
-                <img src="/static/img/Encabezado/mensaje.png" alt="Contacto">
+                <img src="{{ url_for('static', filename='img/encabezado/mensaje.png') }}" alt="Contacto">
             </a>
             <a href="carrito.html" class="carrito">
-                <img src="/static/img/Encabezado/carrito.png" alt="Carrito">
+                <img src="{{ url_for('static', filename='img/encabezado/carrito.png') }}" alt="Carrito">
             </a>
         </div>
     </header>

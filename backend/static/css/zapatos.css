@@ -204,7 +204,10 @@
     background: white;
 }
 
-/* Responsive funciones/media queries después */
+
+
+
+
 @media (max-width: 1200px) {
     .producto-card {
         gap: 80px;

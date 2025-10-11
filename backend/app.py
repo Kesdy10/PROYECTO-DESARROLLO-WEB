@@ -1,6 +1,17 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
+import os
 
-app = Flask(__name__, static_folder='static', template_folder='templates')
+# Obtener el directorio actual
+current_dir = os.path.dirname(os.path.abspath(__file__))
+static_dir = os.path.join(current_dir, 'static')
+template_dir = os.path.join(current_dir, 'templates')
+
+app = Flask(__name__, static_folder=static_dir, template_folder=template_dir)
+
+# Ruta para servir archivos estáticos
+@app.route('/static/<path:filename>')
+def static_files(filename):
+    return send_from_directory(static_dir, filename)
 
 # VENTANAS
 @app.route('/')

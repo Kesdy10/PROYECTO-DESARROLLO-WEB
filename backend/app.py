@@ -1,24 +1,10 @@
-from flask import Flask, render_template, send_from_directory
-import os
+from flask import Flask, render_template
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
-# Prevenir caché en desarrollo
-@app.after_request
-def after_request(response):
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "0"
-    return response
-
-# Ruta para servir archivos estáticos explícitamente
-@app.route('/static/<path:filename>')
-def static_files(filename):
-    return send_from_directory(app.static_folder, filename)
-
 # VENTANAS
 @app.route('/')
-def home():
+def login():
     return render_template('ventanas/login.html')
 
 @app.route('/login.html')

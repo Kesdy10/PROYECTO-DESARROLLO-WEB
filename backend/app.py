@@ -1,48 +1,6 @@
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
-
-# Ruta para servir archivos estáticos
-@app.route('/static/<path:filename>')
-def static_files(filename):
-    return send_from_directory(app.static_folder, filename)
-    
-    
-# --- Debug endpoints (safe to remove) -------------------------------------
-@app.route('/debug/static')
-def debug_static():
-    """Return JSON with existence info for a provided static file.
-    Usage: /debug/static?file=img/encabezado/logo.jpeg
-    """
-    from flask import request, jsonify
-    fn = request.args.get('file')
-    if not fn:
-        return jsonify({'error': 'missing file parameter'}), 400
-    # Normalize path
-    safe_path = os.path.normpath(os.path.join(app.static_folder, fn))
-    # Ensure path is inside static_dir
-    if not safe_path.startswith(app.static_folder):
-        return jsonify({'error': 'invalid path'}), 400
-    exists = os.path.exists(safe_path)
-    return jsonify({'file': fn, 'abs_path': safe_path, 'exists': exists})
-    
-    
-@app.route('/debug/list-static')
-def debug_list_static():
-    """Return a JSON list of files in the static directory (one level deep).
-    Useful to verify Railway has the files checked into the repo.
-    """
-    from flask import jsonify
-    out = []
-    for root, dirs, files in os.walk(app.static_folder):
-        # only list first level (break after first iteration)
-        for f in files:
-            rel = os.path.relpath(os.path.join(root, f), app.static_folder)
-            out.append(rel.replace('\\\\', '/'))
-        break
-    return jsonify({'static_root': app.static_folder, 'files': out})
-    
-# -------------------------------------------------------------------------
 
 # VENTANAS
 @app.route('/')

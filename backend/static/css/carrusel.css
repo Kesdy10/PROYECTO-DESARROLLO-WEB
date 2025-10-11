@@ -4,56 +4,56 @@
     width: 1125px;
     height: 1140px;
     padding: 50px;
-  }
-  
-  ul, li {
-      padding: 0;
-      margin: 0;
-      list-style: none;
-  }
-  
-  ul.slider{
+}
+
+ul, li {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+ul.slider{
     position: relative;
     width: 100%;
     height: 800px;
-  }
-  
-  ul.slider li {
-      position: absolute;
-      left: 0px;
-      top: 0px;
-      opacity: 0;
-      width: inherit;
-      height: inherit;
-      transition: opacity .5s;
-      background:rgba(255, 255, 255, 0);
-  }
-  
-  ul.slider li img{
+}
+
+ul.slider li {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    opacity: 0;
+    width: inherit;
+    height: inherit;
+    transition: opacity .5s;
+    background:rgba(255, 255, 255, 0);
+}
+
+ul.slider li img{
     width: 1045px;
     height: 700px;
     object-fit: cover;
-  }
-  
-  ul.slider li:first-child {
-      opacity: 1; 
-  }
-  
-  ul.slider li:target {
-      opacity: 1;
-  }
-  
-  .carru{
+}
+
+ul.slider li:first-child {
+    opacity: 1; 
+}
+
+ul.slider li:target {
+    opacity: 1;
+}
+
+.carru{
     text-align: center;
     margin: 50px;
-  }
-  
-  .carru li{
+}
+
+.carru li{
     display: inline-block;
     text-align: center;
-  }
-  
-  .carru li a{
+}
+
+.carru li a{
     color: rgba(247, 3, 3, 0);
     text-decoration: none;
     position: relative;
@@ -63,7 +63,6 @@
     font-size: 50px;
     border-radius: 100%;
 }
-
 
 .producto button{
     width: 50px;

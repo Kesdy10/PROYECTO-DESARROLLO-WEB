@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Nike Gato SB - Don Gato</title>
+    <title>Adidas Campus - Don Gato</title>
     <link rel="stylesheet" href="/static/css/estilos.css">
     <link rel="stylesheet" href="/static/css/carrusel.css">
     <link rel="stylesheet" href="/static/css/zapatos.css">
@@ -33,17 +33,17 @@
         <div class="info-producto">
             <div class="carrusel">
                 <div class="carrusel-imagenes">
-                    <img src="/static/img/nike/Nike Gato SB/1.webp" alt="Nike 1" class="active">
-                    <img src="/static/img/nike/Nike Gato SB/2.webp" alt="Nike 2">
-                    <img src="/static/img/nike/Nike Gato SB/3.webp" alt="Nike 3">
+                    <img src="/static/img/adidas/Adidas Campus/1.webp" alt="Adidas Campus 1" class="active">
+                    <img src="/static/img/adidas/Adidas Campus/2.webp" alt="Adidas Campus 2">
+                    <img src="/static/img/adidas/Adidas Campus/3.webp" alt="Adidas Campus 3">
                 </div>
                 <button class="carrusel-anterior">&#10094;</button>
                 <button class="carrusel-siguiente">&#10095;</button>
             </div>
         </div>
         <div class="datos-producto">
-            <div class="titulo-producto">Nike Gato SB</div>
-            <div class="precio-producto">Q1000</div>
+            <div class="titulo-producto">Adidas Campus</div>
+            <div class="precio-producto">Q800</div>
             <div class="tallas-producto">
                 <label>Tallas disponibles:</label>
                 <div class="tallas-lista" id="tallas-lista">
@@ -109,12 +109,12 @@
         if (tallaSeleccionada) {
             let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
             carrito.push({
-                producto: 'Nike Gato SB',
+                producto: 'Adidas Campus',
                 talla: tallaSeleccionada,
-                precio: 1000
+                precio: 800
             });
             localStorage.setItem('carrito', JSON.stringify(carrito));
-            alert(`Agregado al carrito: Nike Gato SB, Talla ${tallaSeleccionada}`);
+            alert(`Agregado al carrito: Adidas Campus, Talla ${tallaSeleccionada}`);
         }
     });
 </script>

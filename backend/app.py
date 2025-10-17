@@ -34,11 +34,11 @@ def carrito():
 # MARCAS
 @app.route('/nike.html')
 def nike():
-    return render_template('ventanas/nike.html')
+    return render_template('productosNike/nike.html')
 
 @app.route('/adidas.html')
 def adidas():
-    return render_template('ventanas/adidas.html')
+    return render_template('productosAdidas/adidas.html')
 
 @app.route('/newbalance.html')
 def newbalance():
@@ -60,6 +60,30 @@ def vans():
 @app.route('/nikegato.html')
 def nikegato():
     return render_template('productosNike/nikegato.html')
+
+@app.route('/adidassamba.html')
+def adidassamba():
+    return render_template('productosAdidas/adidassamba.html')
+
+@app.route('/adidaskaptir.html')
+def adidaskaptir():
+    return render_template('productosAdidas/adidaskaptir.html')
+
+@app.route('/adidasadizero.html')
+def adidasadizero():
+    return render_template('productosAdidas/adidasadizero.html')
+
+@app.route('/adidascampus.html')
+def adidascampus():
+    return render_template('productosAdidas/adidascampus.html')
+
+@app.route('/adidasgazelle.html')
+def adidasgazelle():
+    return render_template('productosAdidas/adidasgazelle.html')
+
+@app.route('/adidasultraboost.html')
+def adidasultraboost():
+    return render_template('productosAdidas/adidasultraboost.html')
 
 if __name__ == '__main__':
     import os

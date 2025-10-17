@@ -12,19 +12,19 @@
 <header>
     <div class="izquierda">
         <a href="index.html">
-            <img src="/static/img/encabezado/logo.jpeg" alt="Logo">
+            <img src="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}" alt="Logo">
         </a>
         <h1>DON GATO</h1>
     </div>
     <div class="derecha">
         <a href="cuenta.html" class="cuenta">
-            <img src="/static/img/encabezado/perfil.png" alt="Cuenta">
+            <img src="{{ url_for('static', filename='img/encabezado/perfil.png') }}" alt="Cuenta">
         </a>
         <a href="contacto.html" class="contacto">
-            <img src="/static/img/encabezado/mensaje.png" alt="Contacto">
+            <img src="{{ url_for('static', filename='img/encabezado/mensaje.png') }}" alt="Contacto">
         </a>
         <a href="carrito.html" class="carrito">
-            <img src="/static/img/encabezado/carrito.png" alt="Carrito">
+            <img src="{{ url_for('static', filename='img/encabezado/carrito.png') }}" alt="Carrito">
         </a>
     </div>
 </header>
@@ -33,9 +33,9 @@
         <div class="info-producto">
             <div class="carrusel">
                 <div class="carrusel-imagenes">
-                    <img src="/static/img/nike/Nike Gato SB/1.webp" alt="Nike 1" class="active">
-                    <img src="/static/img/nike/Nike Gato SB/2.webp" alt="Nike 2">
-                    <img src="/static/img/nike/Nike Gato SB/3.webp" alt="Nike 3">
+                    <img src="/static/img/adidas/Adidas Samba/1.webp" alt="Adidas 1" class="active">
+                    <img src="/static/img/adidas/Adidas Samba/2.webp" alt="Adidas 2">
+                    <img src="/static/img/adidas/Adidas Samba/3.webp" alt="Adidas 3">
                 </div>
                 <button class="carrusel-anterior">&#10094;</button>
                 <button class="carrusel-siguiente">&#10095;</button>

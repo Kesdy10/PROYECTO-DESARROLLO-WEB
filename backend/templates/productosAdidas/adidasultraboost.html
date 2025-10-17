@@ -66,57 +66,6 @@
 <footer>
     &copy; 2025 Don Gato. Todos los derechos reservados.
 </footer>
-<script>
-    // Carrusel simple JS con flechas y teclado
-    const imagenes = document.querySelectorAll('.carrusel-imagenes img');
-    let indice = 0;
-    function mostrarImagen(idx) {
-        imagenes.forEach((img, i) => {
-            img.classList.toggle('active', i === idx);
-        });
-    }
-    function anterior() {
-        indice = (indice - 1 + imagenes.length) % imagenes.length;
-        mostrarImagen(indice);
-    }
-    function siguiente() {
-        indice = (indice + 1) % imagenes.length;
-        mostrarImagen(indice);
-    }
-    document.querySelector('.carrusel-anterior').onclick = anterior;
-    document.querySelector('.carrusel-siguiente').onclick = siguiente;
-    document.addEventListener('keydown', function(e) {
-        if (e.key === "ArrowLeft") anterior();
-        if (e.key === "ArrowRight") siguiente();
-    });
-
-    // Selección de talla y habilitar botón
-    const tallas = document.querySelectorAll('.talla-item');
-    const btnAgregar = document.getElementById('agregar-carrito');
-    let tallaSeleccionada = null;
-
-    tallas.forEach(talla => {
-        talla.addEventListener('click', () => {
-            tallas.forEach(t => t.classList.remove('selected'));
-            talla.classList.add('selected');
-            tallaSeleccionada = talla.dataset.talla;
-            btnAgregar.disabled = false;
-            btnAgregar.classList.add('enabled');
-        });
-    });
-
-    btnAgregar.addEventListener('click', () => {
-        if (tallaSeleccionada) {
-            let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-            carrito.push({
-                producto: 'Adidas Ultraboost',
-                talla: tallaSeleccionada,
-                precio: 1200
-            });
-            localStorage.setItem('carrito', JSON.stringify(carrito));
-            alert(`Agregado al carrito: Adidas Ultraboost, Talla ${tallaSeleccionada}`);
-        }
-    });
-</script>
+<script src="/static/js/productos.js"></script>
 </body>
 </html>

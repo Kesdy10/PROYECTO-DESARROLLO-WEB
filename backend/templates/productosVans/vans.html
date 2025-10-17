@@ -1,0 +1,96 @@
+<!--PROYECTO-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Vans - Don Gato</title>
+    <link rel="stylesheet" href="/static/css/estilos.css">
+    <link rel="icon" href="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}">
+</head>
+<body>
+    <!-- ENCABEZADO -->
+    <header>
+        <div class="izquierda">
+            <a href="index.html">
+                <img src="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}" alt="Logo">
+            </a>
+            <h1>DON GATO</h1>
+        </div>
+        <div class="derecha">
+            <a href="cuenta.html" class="cuenta">
+                <img src="{{ url_for('static', filename='img/encabezado/perfil.png') }}" alt="Cuenta">
+            </a>
+            <a href="contacto.html" class="contacto">
+                <img src="{{ url_for('static', filename='img/encabezado/mensaje.png') }}" alt="Contacto">
+            </a>
+            <a href="carrito.html" class="carrito">
+                <img src="{{ url_for('static', filename='img/encabezado/carrito.png') }}" alt="Carrito">
+            </a>
+        </div>
+    </header>
+
+    <!-- CUERPO DE LA PÁGINA -->
+    <main>
+        <blockquote><hr style="color:#9e0b0f;"></blockquote>
+        <h2 style="text-align: center; font-size: 40px; color: black; font-family: 'Showcard Gothic', sans-serif;">
+            Productos Vans Disponibles:
+        </h2>
+        <blockquote><hr style="color:#9e0b0f;"></blockquote>
+
+        <!-- Productos Vans -->
+        <div class="contenedor2">
+            <div>
+                <a href="vanschukka.html">
+                    <img src="/static/img/vans/Vans Chukka Push/1.webp" alt="Vans Chukka Push">
+                </a>
+                <h3>Vans Chukka Push</h3>
+                <p>Q800</p>
+            </div>
+            <div>
+                <a href="vansclassicslip.html">
+                    <img src="/static/img/vans/Vans Classic Slip-On/1.webp" alt="Vans Classic Slip-On">
+                </a>
+                <h3>Vans Classic Slip-On</h3>
+                <p>Q750</p>
+            </div>
+            <div>
+                <a href="vansoldskool.html">
+                    <img src="/static/img/vans/Vans Old Skool Core/1.webp" alt="Vans Old Skool Core">
+                </a>
+                <h3>Vans Old Skool Core</h3>
+                <p>Q850</p>
+            </div>
+        </div>
+
+        <div class="contenedor2">
+            <div>
+                <a href="vanssk8hi.html">
+                    <img src="/static/img/vans/Vans Sk8-Hi/1.webp" alt="Vans Sk8-Hi">
+                </a>
+                <h3>Vans Sk8-Hi</h3>
+                <p>Q900</p>
+            </div>
+            <div>
+                <a href="vanssuperlowpro.html">
+                    <img src="/static/img/vans/Vans Super Lowpro/1.webp" alt="Vans Super Lowpro">
+                </a>
+                <h3>Vans Super Lowpro</h3>
+                <p>Q700</p>
+            </div>
+            <div>
+                <a href="vansultrarange.html">
+                    <img src="/static/img/vans/Vans UltraRange 2.0/1.webp" alt="Vans UltraRange 2.0">
+                </a>
+                <h3>Vans UltraRange 2.0</h3>
+                <p>Q950</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+    <footer>
+        &copy; 2025 Don Gato. Todos los derechos reservados.
+    </footer>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>

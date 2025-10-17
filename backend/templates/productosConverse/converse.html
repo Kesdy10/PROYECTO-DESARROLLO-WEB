@@ -1,0 +1,96 @@
+<!--PROYECTO-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Converse - Don Gato</title>
+    <link rel="stylesheet" href="/static/css/estilos.css">
+    <link rel="icon" href="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}">
+</head>
+<body>
+    <!-- ENCABEZADO -->
+    <header>
+        <div class="izquierda">
+            <a href="index.html">
+                <img src="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}" alt="Logo">
+            </a>
+            <h1>DON GATO</h1>
+        </div>
+        <div class="derecha">
+            <a href="cuenta.html" class="cuenta">
+                <img src="{{ url_for('static', filename='img/encabezado/perfil.png') }}" alt="Cuenta">
+            </a>
+            <a href="contacto.html" class="contacto">
+                <img src="{{ url_for('static', filename='img/encabezado/mensaje.png') }}" alt="Contacto">
+            </a>
+            <a href="carrito.html" class="carrito">
+                <img src="{{ url_for('static', filename='img/encabezado/carrito.png') }}" alt="Carrito">
+            </a>
+        </div>
+    </header>
+
+    <!-- CUERPO DE LA PÁGINA -->
+    <main>
+        <blockquote><hr style="color:#9e0b0f;"></blockquote>
+        <h2 style="text-align: center; font-size: 40px; color: black; font-family: 'Showcard Gothic', sans-serif;">
+            Productos Converse Disponibles:
+        </h2>
+        <blockquote><hr style="color:#9e0b0f;"></blockquote>
+
+        <!-- Productos Converse -->
+        <div class="contenedor2">
+            <div>
+                <a href="conversechuck70.html">
+                    <img src="/static/img/converse/Converse Chuck 70/1.webp" alt="Converse Chuck 70">
+                </a>
+                <h3>Converse Chuck 70</h3>
+                <p>Q750</p>
+            </div>
+            <div>
+                <a href="conversechucktaylor.html">
+                    <img src="/static/img/converse/Converse Chuck Taylor All-Star/1.webp" alt="Converse Chuck Taylor All-Star">
+                </a>
+                <h3>Converse Chuck Taylor All-Star</h3>
+                <p>Q650</p>
+            </div>
+            <div>
+                <a href="conversecl98.html">
+                    <img src="/static/img/converse/Converse CL98/1.webp" alt="Converse CL98">
+                </a>
+                <h3>Converse CL98</h3>
+                <p>Q800</p>
+            </div>
+        </div>
+
+        <div class="contenedor2">
+            <div>
+                <a href="conversefastbreak.html">
+                    <img src="/static/img/converse/Converse Fastbreak/1.webp" alt="Converse Fastbreak">
+                </a>
+                <h3>Converse Fastbreak</h3>
+                <p>Q850</p>
+            </div>
+            <div>
+                <a href="converserunstar.html">
+                    <img src="/static/img/converse/Converse Run Star Trainer/1.webp" alt="Converse Run Star Trainer">
+                </a>
+                <h3>Converse Run Star Trainer</h3>
+                <p>Q900</p>
+            </div>
+            <div>
+                <a href="conversewave.html">
+                    <img src="/static/img/converse/Converse Wave Trainer/1.webp" alt="Converse Wave Trainer">
+                </a>
+                <h3>Converse Wave Trainer</h3>
+                <p>Q700</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+    <footer>
+        &copy; 2025 Don Gato. Todos los derechos reservados.
+    </footer>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>

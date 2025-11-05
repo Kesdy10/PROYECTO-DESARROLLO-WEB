@@ -60,18 +60,12 @@ class Mensaje(db.Model):
         return f'<Mensaje {self.nombre}>'
 
 # Inicializar la base de datos con manejo de errores
-def init_database():
-    try:
-        with app.app_context():
-            db.create_all()
-            print("✅ Base de datos inicializada correctamente")
-            return True
-    except Exception as e:
-        print(f"❌ Error al inicializar la base de datos: {e}")
-        return False
-
-# Intentar inicializar la base de datos
-init_database()
+try:
+    with app.app_context():
+        db.create_all()
+        print("✅ Tablas de la base de datos creadas/verificadas")
+except Exception as e:
+    print(f"⚠️ Error al inicializar BD (se intentará en runtime): {e}")
 
 # VENTANAS
 @app.route('/health')
@@ -98,6 +92,16 @@ def health_check():
             'database': 'disconnected',
             'error': str(e)
         }, 500
+
+# Manejo global de errores
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('ventanas/login.html'), 500
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return redirect(url_for('login'))
 
 @app.route('/')
 def login():
@@ -462,6 +466,17 @@ if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))
     
+    print(f"🚀 Iniciando aplicación en puerto {port}")
+    print(f"🔧 DATABASE_URL disponible: {'Sí' if os.environ.get('DATABASE_URL') else 'No'}")
+    
+    # Intentar inicializar BD si no se hizo antes
+    try:
+        with app.app_context():
+            db.create_all()
+            print("✅ Verificación final de BD completada")
+    except Exception as e:
+        print(f"⚠️ Error en verificación final de BD: {e}")
+    
     # En desarrollo, usar el servidor de desarrollo de Flask
-    # En producción, Railway usará Gunicorn
+    # En producción, Railway usará este mismo comando
     app.run(host='0.0.0.0', port=port, debug=False)

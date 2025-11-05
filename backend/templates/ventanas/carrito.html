@@ -32,28 +32,28 @@
     <div class="cuenta">
         <br>
         <h1>Carrito</h1>
-        <table style="width:100%; font-size:18px; margin-bottom:20px;">
+        <table style="width:100%; font-size:18px; margin-bottom:20px; border-collapse: collapse;">
             <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                    <th>Precio</th>
-                    <th>Subtotal</th>
+                <tr style="background-color: #f2f2f2;">
+                    <th style="text-align: left; padding: 12px; border-bottom: 2px solid #ddd;">Producto</th>
+                    <th style="text-align: center; padding: 12px; border-bottom: 2px solid #ddd; width: 100px;">Cantidad</th>
+                    <th style="text-align: center; padding: 12px; border-bottom: 2px solid #ddd; width: 120px;">Precio</th>
+                    <th style="text-align: center; padding: 12px; border-bottom: 2px solid #ddd; width: 120px;">Subtotal</th>
                 </tr>
             </thead>
             <tbody id="carrito-productos">
                 {% if carrito_items %}
                     {% for item in carrito_items %}
-                    <tr>
-                        <td>{{ item.nombre }} - Talla {{ item.talla }}</td>
-                        <td>1</td>
-                        <td>Q{{ item.precio }}</td>
-                        <td>Q{{ item.precio }}</td>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 12px; text-align: left;">{{ item.nombre }} - Talla {{ item.talla }}</td>
+                        <td style="padding: 12px; text-align: center;">1</td>
+                        <td style="padding: 12px; text-align: center;">Q{{ item.precio }}</td>
+                        <td style="padding: 12px; text-align: center;">Q{{ item.precio }}</td>
                     </tr>
                     {% endfor %}
                 {% else %}
                     <tr>
-                        <td colspan="4" style="text-align: center;">El carrito está vacío</td>
+                        <td colspan="4" style="padding: 20px; text-align: center; color: #666;">El carrito está vacío</td>
                     </tr>
                 {% endif %}
             </tbody>

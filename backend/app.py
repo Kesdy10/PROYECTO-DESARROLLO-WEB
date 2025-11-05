@@ -92,7 +92,7 @@ def seed_or_update_products():
         dict(nombre='Nike P-6000', marca='Nike', precio=1100, pagina_html='nikep6000.html'),
         dict(nombre='Nike Pegasus Plus', marca='Nike', precio=1300, pagina_html='nikepegasusplus.html'),
         dict(nombre='Nike Premier III', marca='Nike', precio=950, pagina_html='nikepremieriii.html'),
-
+        
         # NEW BALANCE
         dict(nombre='New Balance 574', marca='New Balance', precio=800, pagina_html='newbalance574.html'),
         dict(nombre='New Balance 740', marca='New Balance', precio=700, pagina_html='newbalance740.html'),
@@ -100,14 +100,8 @@ def seed_or_update_products():
         dict(nombre='New Balance 997R', marca='New Balance', precio=1000, pagina_html='newbalance997r.html'),
         dict(nombre='New Balance 2002R', marca='New Balance', precio=1300, pagina_html='newbalance2002r.html'),
         dict(nombre='New Balance 9060', marca='New Balance', precio=1500, pagina_html='newbalance9060.html'),
-
-        # ADIDAS
-        dict(nombre='Adidas Adizero', marca='Adidas', precio=1300, pagina_html='adidasadizero.html'),
-        dict(nombre='Adidas Campus', marca='Adidas', precio=800, pagina_html='adidascampus.html'),
-        dict(nombre='Adidas Gazelle', marca='Adidas', precio=900, pagina_html='adidasgazelle.html'),
-        dict(nombre='Adidas Kaptir', marca='Adidas', precio=700, pagina_html='adidaskaptir.html'),
-        dict(nombre='Adidas Samba', marca='Adidas', precio=1100, pagina_html='adidassamba.html'),
-        dict(nombre='Adidas Ultraboost', marca='Adidas', precio=1800, pagina_html='adidasultraboost.html'),
+        
+        # ADIDAS (omitido en BD por ahora, precios manejados en templates)
 
         # CONVERSE
         dict(nombre='Converse Chuck 70', marca='Converse', precio=650, pagina_html='conversechuck70.html'),
@@ -328,8 +322,8 @@ def cuenta():
         if new_password:
             if new_password != confirm_password:
                 return render_template('ventanas/cuenta.html', usuario=usuario, error_password='Las contraseñas no coinciden')
-            if len(new_password) < 6:
-                return render_template('ventanas/cuenta.html', usuario=usuario, error_password='La contraseña debe tener al menos 6 caracteres')
+            if len(new_password) < 5:
+                return render_template('ventanas/cuenta.html', usuario=usuario, error_password='La contraseña debe tener al menos 5 caracteres')
         
         # Actualizar datos del usuario
         usuario.nombres = nombres

@@ -11,19 +11,19 @@
     <!-- ENCABEZADO -->
     <header>
         <div class="izquierda">
-            <a href="index.html">
+            <a href="{{ url_for('index') }}">
                 <img src="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}" alt="Logo">
             </a>
             <h1>DON GATO</h1>
         </div>
         <div class="derecha">
-            <a href="cuenta.html" class="cuenta">
+            <a href="{{ url_for('cuenta') }}" class="cuenta">
                 <img src="/static/img/encabezado/perfil.png" alt="Cuenta">
             </a>
-            <a href="contacto.html" class="contacto">
+            <a href="{{ url_for('contacto') }}" class="contacto">
                 <img src="/static/img/encabezado/mensaje.png" alt="Contacto">
             </a>
-            <a href="carrito.html" class="carrito">
+            <a href="{{ url_for('carrito') }}" class="carrito">
                 <img src="/static/img/encabezado/carrito.png" alt="Carrito">
             </a>
         </div>
@@ -40,49 +40,49 @@
         <!-- Productos Adidas -->
         <div class="contenedor2">
             <div>
-                <a href="adidassamba.html">
+                <a href="{{ url_for('adidassamba') }}">
                     <img src="/static/img/adidas/Adidas Samba/1.webp" alt="Adidas Samba">
                 </a>
                 <h3>Adidas Samba</h3>
-                <p>Q900</p>
+                <p>Q1100</p>
             </div>
             <div>
-                <a href="adidaskaptir.html">
+                <a href="{{ url_for('adidaskaptir') }}">
                     <img src="/static/img/adidas/Adidas Kaptir/1.webp" alt="Adidas Kaptir">
                 </a>
                 <h3>Adidas Kaptir</h3>
-                <p>Q850</p>
+                <p>Q700</p>
             </div>
             <div>
-                <a href="adidasadizero.html">
+                <a href="{{ url_for('adidasadizero') }}">
                     <img src="/static/img/adidas/Adidas Adizero/1.webp" alt="Adidas Adizero">
                 </a>
                 <h3>Adidas Adizero</h3>
-                <p>Q950</p>
+                <p>Q1300</p>
             </div>
         </div>
 
         <div class="contenedor2">
             <div>
-                <a href="adidascampus.html">
+                <a href="{{ url_for('adidascampus') }}">
                     <img src="/static/img/adidas/Adidas Campus/1.webp" alt="Adidas Campus">
                 </a>
                 <h3>Adidas Campus</h3>
                 <p>Q800</p>
             </div>
             <div>
-                <a href="adidasgazelle.html">
+                <a href="{{ url_for('adidasgazelle') }}">
                     <img src="/static/img/adidas/Adidas Gazelle/1.webp" alt="Adidas Gazelle">
                 </a>
                 <h3>Adidas Gazelle</h3>
-                <p>Q750</p>
+                <p>Q900</p>
             </div>
             <div>
-                <a href="adidasultraboost.html">
+                <a href="{{ url_for('adidasultraboost') }}">
                     <img src="/static/img/adidas/Adidas Ultraboost/1.webp" alt="Adidas Ultraboost">
                 </a>
                 <h3>Adidas Ultraboost</h3>
-                <p>Q1200</p>
+                <p>Q1800</p>
             </div>
         </div>
     </main>

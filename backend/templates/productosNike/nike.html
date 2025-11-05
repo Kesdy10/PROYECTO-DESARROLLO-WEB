@@ -11,19 +11,19 @@
     <!-- ENCABEZADO -->
     <header>
         <div class="izquierda">
-            <a href="index.html">
+            <a href="{{ url_for('index') }}">
                 <img src="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}" alt="Logo">
             </a>
             <h1>DON GATO</h1>
         </div>
         <div class="derecha">
-            <a href="cuenta.html" class="cuenta">
+            <a href="{{ url_for('cuenta') }}" class="cuenta">
                 <img src="/static/img/encabezado/perfil.png" alt="Cuenta">
             </a>
-            <a href="contacto.html" class="contacto">
+            <a href="{{ url_for('contacto') }}" class="contacto">
                 <img src="/static/img/encabezado/mensaje.png" alt="Contacto">
             </a>
-            <a href="carrito.html" class="carrito">
+            <a href="{{ url_for('carrito') }}" class="carrito">
                 <img src="/static/img/encabezado/carrito.png" alt="Carrito">
             </a>
         </div>
@@ -40,49 +40,49 @@
         <!-- Productos Nike -->
         <div class="contenedor2">
             <div>
-                <a href="nikegato.html">
+                <a href="{{ url_for('nikegato') }}">
                     <img src="/static/img/nike/Nike Gato SB/1.webp" alt="Nike Gato SB">
                 </a>
                 <h3>Nike Gato SB</h3>
                 <p>Q1000</p>
             </div>
             <div>
-                <a href="nikepremieriii.html">
+                <a href="{{ url_for('nikepremieriii') }}">
                     <img src="/static/img/nike/Nike Premier III/1.webp" alt="Nike Premier III">
                 </a>
                 <h3>Nike Premier III</h3>
-                <p>Q1200</p>
+                <p>Q950</p>
             </div>
             <div>
-                <a href="nikepegasusplus.html">
+                <a href="{{ url_for('nikepegasusplus') }}">
                     <img src="/static/img/nike/Nike Pegasus Plus/1.webp" alt="Nike Pegasus Plus">
                 </a>
                 <h3>Nike Pegasus Plus</h3>
-                <p>Q950</p>
+                <p>Q1300</p>
             </div>
         </div>
 
         <div class="contenedor2">
             <div>
-                <a href="nikeairmaxnuaxis.html">
+                <a href="{{ url_for('nikeairmaxnuaxis') }}">
                     <img src="/static/img/nike/Nike Air Max Nuaxis/1.webp" alt="Nike Air Max Nuaxis">
                 </a>
                 <h3>Nike Air Max Nuaxis</h3>
-                <p>Q800</p>
+                <p>Q1200</p>
             </div>
             <div>
-                <a href="nikeairjordan1mid.html">
+                <a href="{{ url_for('nikeairjordan1mid') }}">
                     <img src="/static/img/nike/Nike Air Jordan 1 Mid/1.webp" alt="Nike Air Jordan 1 Mid">
                 </a>
                 <h3>Nike Air Jordan 1 Mid</h3>
                 <p>Q1400</p>
             </div>
             <div>
-                <a href="nikep6000.html">
+                <a href="{{ url_for('nikep6000') }}">
                     <img src="/static/img/nike/Nike P-6000/1.webp" alt="Nike P-6000">
                 </a>
                 <h3>Nike P-6000</h3>
-                <p>Q1000</p>
+                <p>Q1100</p>
             </div>
         </div>
     </main>

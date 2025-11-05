@@ -63,10 +63,12 @@ class Mensaje(db.Model):
 # Inicializar la base de datos con manejo de errores
 try:
     with app.app_context():
-        db.create_all()
-        print("✅ Tablas de la base de datos creadas/verificadas")
+        # Forzar recreación de tablas para corregir estructura
+        db.drop_all()  # Eliminar tablas existentes
+        db.create_all()  # Crear tablas con estructura correcta
+        print("✅ Tablas recreadas correctamente")
 except Exception as e:
-    print(f"⚠️ Error al inicializar BD (se intentará en runtime): {e}")
+    print(f"⚠️ Error al recrear tablas: {e}")
 
 # VENTANAS
 @app.route('/health')
@@ -142,6 +144,25 @@ def ver_mensajes():
         }, 200
     except Exception as e:
         return {
+            'error': str(e)
+        }, 500
+
+@app.route('/admin/recrear-tablas')
+def recrear_tablas():
+    """Recrear todas las tablas - Solo para fixing de estructura"""
+    try:
+        with app.app_context():
+            db.drop_all()  # Eliminar todas las tablas
+            db.create_all()  # Crear todas las tablas con estructura actual
+            
+        return {
+            'status': 'success',
+            'message': 'Tablas recreadas exitosamente',
+            'tablas_creadas': ['usuario', 'mensaje']
+        }, 200
+    except Exception as e:
+        return {
+            'status': 'error',
             'error': str(e)
         }, 500
 

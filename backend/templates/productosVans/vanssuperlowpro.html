@@ -11,19 +11,19 @@
 <body>
 <header>
     <div class="izquierda">
-        <a href="index.html">
+        <a href="/ventanas/index.html">
             <img src="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}" alt="Logo">
         </a>
         <h1>DON GATO</h1>
     </div>
     <div class="derecha">
-        <a href="cuenta.html" class="cuenta">
+        <a href="/ventanas/cuenta.html" class="cuenta">
             <img src="/static/img/encabezado/perfil.png" alt="Cuenta">
         </a>
-        <a href="contacto.html" class="contacto">
+        <a href="/ventanas/contacto.html" class="contacto">
             <img src="/static/img/encabezado/mensaje.png" alt="Contacto">
         </a>
-        <a href="carrito.html" class="carrito">
+        <a href="/ventanas/carrito.html" class="carrito">
             <img src="/static/img/encabezado/carrito.png" alt="Carrito">
         </a>
     </div>
@@ -42,30 +42,41 @@
             </div>
         </div>
         <div class="datos-producto">
-            <div class="titulo-producto">Vans Super Lowpro</div>
-            <div class="precio-producto">Q700</div>
-            <div class="tallas-producto">
-                <label>Tallas disponibles:</label>
-                <div class="tallas-lista" id="tallas-lista">
-                    <div class="talla-item" data-talla="5.5">5.5</div>
-                    <div class="talla-item" data-talla="6">6</div>
-                    <div class="talla-item" data-talla="6.5">6.5</div>
-                    <div class="talla-item" data-talla="7">7</div>
-                    <div class="talla-item" data-talla="7.5">7.5</div>
-                    <div class="talla-item" data-talla="8">8</div>
-                    <div class="talla-item" data-talla="8.5">8.5</div>
-                    <div class="talla-item" data-talla="9">9</div>
-                    <div class="talla-item" data-talla="9.5">9.5</div>
-                    <div class="talla-item" data-talla="10">10</div>
-                    <button class="agregar-carrito-btn" id="agregar-carrito" disabled>Agregar al carrito</button>
+            <div class="titulo-producto">{{ producto.nombre if producto else 'Vans Super Lowpro' }}</div>
+            <div class="precio-producto">Q{{ producto.precio if producto else 800 }}</div>
+            <form method="POST" action="{{ url_for('agregar_carrito') }}" id="form-carrito">
+                <input type="hidden" name="nombre_producto" value="{{ producto.nombre if producto else 'Vans Super Lowpro' }}">
+                <input type="hidden" name="precio" value="{{ producto.precio if producto else 800 }}">
+                <input type="hidden" name="talla" id="talla-seleccionada">
+                <div class="tallas-producto">
+                    <label>Tallas disponibles:</label>
+                    <div class="tallas-lista" id="tallas-lista">
+                        {% if producto %}
+                            {% for t in producto.get_tallas() %}
+                                <div class="talla-item" data-talla="{{ t }}">{{ t }}</div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="talla-item" data-talla="5.5">5.5</div>
+                            <div class="talla-item" data-talla="6">6</div>
+                            <div class="talla-item" data-talla="6.5">6.5</div>
+                            <div class="talla-item" data-talla="7">7</div>
+                            <div class="talla-item" data-talla="7.5">7.5</div>
+                            <div class="talla-item" data-talla="8">8</div>
+                            <div class="talla-item" data-talla="8.5">8.5</div>
+                            <div class="talla-item" data-talla="9">9</div>
+                            <div class="talla-item" data-talla="9.5">9.5</div>
+                            <div class="talla-item" data-talla="10">10</div>
+                        {% endif %}
+                        <button type="submit" class="agregar-carrito-btn" id="agregar-carrito" disabled>Agregar al carrito</button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </main>
 <footer>
     &copy; 2025 Don Gato. Todos los derechos reservados.
 </footer>
-<script src="/static/js/productos.js"></script>
+<script src="/static/js/script.js"></script>
 </body>
 </html>

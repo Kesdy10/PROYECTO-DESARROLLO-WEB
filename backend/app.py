@@ -319,6 +319,7 @@ def agregar_carrito():
     # Obtener datos del formulario
     nombre_producto = request.form.get('nombre_producto')
     talla = request.form.get('talla')
+    precio = request.form.get('precio', '0')
     
     if not nombre_producto or not talla:
         flash('Debes seleccionar una talla', 'error')
@@ -331,7 +332,8 @@ def agregar_carrito():
     # Agregar producto al carrito
     item = {
         'nombre': nombre_producto,
-        'talla': talla
+        'talla': talla,
+        'precio': precio
     }
     
     session['carrito'].append(item)

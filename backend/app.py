@@ -78,70 +78,103 @@ class Producto(db.Model):
         """Retorna lista de tallas disponibles como strings (soporta medias tallas)."""
         return [t.strip() for t in self.tallas_disponibles.split(',') if t.strip()]
 
+def seed_or_update_products():
+    """Crea o actualiza productos base con precios únicos dentro de los rangos dados.
+    Es idempotente: si el producto (por pagina_html) existe, actualiza; si no, inserta.
+    """
+    tallas_default = '5.5,6,6.5,7,7.5,8,8.5,9,9.5,10'
+
+    productos_def = [
+        # NIKE (existentes)
+        dict(nombre='Nike Gato SB', marca='Nike', precio=1000, pagina_html='nikegato.html'),
+        dict(nombre='Nike Air Jordan 1 Mid', marca='Nike', precio=1400, pagina_html='nikeairjordan1mid.html'),
+        dict(nombre='Nike Air Max Nuaxis', marca='Nike', precio=1200, pagina_html='nikeairmaxnuaxis.html'),
+        dict(nombre='Nike P-6000', marca='Nike', precio=1100, pagina_html='nikep6000.html'),
+        dict(nombre='Nike Pegasus Plus', marca='Nike', precio=1300, pagina_html='nikepegasusplus.html'),
+        dict(nombre='Nike Premier III', marca='Nike', precio=950, pagina_html='nikepremieriii.html'),
+
+        # NEW BALANCE
+        dict(nombre='New Balance 574', marca='New Balance', precio=800, pagina_html='newbalance574.html'),
+        dict(nombre='New Balance 740', marca='New Balance', precio=700, pagina_html='newbalance740.html'),
+        dict(nombre='New Balance 990v6', marca='New Balance', precio=1900, pagina_html='newbalance990v6.html'),
+        dict(nombre='New Balance 997R', marca='New Balance', precio=1000, pagina_html='newbalance997r.html'),
+        dict(nombre='New Balance 2002R', marca='New Balance', precio=1300, pagina_html='newbalance2002r.html'),
+        dict(nombre='New Balance 9060', marca='New Balance', precio=1500, pagina_html='newbalance9060.html'),
+
+        # ADIDAS
+        dict(nombre='Adidas Adizero', marca='Adidas', precio=1300, pagina_html='adidasadizero.html'),
+        dict(nombre='Adidas Campus', marca='Adidas', precio=800, pagina_html='adidascampus.html'),
+        dict(nombre='Adidas Gazelle', marca='Adidas', precio=900, pagina_html='adidasgazelle.html'),
+        dict(nombre='Adidas Kaptir', marca='Adidas', precio=700, pagina_html='adidaskaptir.html'),
+        dict(nombre='Adidas Samba', marca='Adidas', precio=1100, pagina_html='adidassamba.html'),
+        dict(nombre='Adidas Ultraboost', marca='Adidas', precio=1800, pagina_html='adidasultraboost.html'),
+
+        # CONVERSE
+        dict(nombre='Converse Chuck 70', marca='Converse', precio=650, pagina_html='conversechuck70.html'),
+        dict(nombre='Converse Chuck Taylor', marca='Converse', precio=500, pagina_html='conversechucktaylor.html'),
+        dict(nombre='Converse CL98', marca='Converse', precio=650, pagina_html='conversecl98.html'),
+        dict(nombre='Converse Fastbreak', marca='Converse', precio=900, pagina_html='conversefastbreak.html'),
+        dict(nombre='Converse Run Star', marca='Converse', precio=1200, pagina_html='converserunstar.html'),
+        dict(nombre='Converse Wave', marca='Converse', precio=900, pagina_html='conversewave.html'),
+
+        # VANS
+        dict(nombre='Vans Chukka', marca='Vans', precio=700, pagina_html='vanschukka.html'),
+        dict(nombre='Vans Classic Slip', marca='Vans', precio=600, pagina_html='vansclassicslip.html'),
+        dict(nombre='Vans Old Skool', marca='Vans', precio=550, pagina_html='vansoldskool.html'),
+        dict(nombre='Vans Sk8-Hi', marca='Vans', precio=750, pagina_html='vanssk8hi.html'),
+        dict(nombre='Vans Super Low Pro', marca='Vans', precio=800, pagina_html='vanssuperlowpro.html'),
+        dict(nombre='Vans UltraRange', marca='Vans', precio=900, pagina_html='vansultrarange.html'),
+
+        # REEBOK
+        dict(nombre='Reebok Classic Nylon', marca='Reebok', precio=650, pagina_html='reebokclassicnylon.html'),
+        dict(nombre='Reebok Fiori', marca='Reebok', precio=550, pagina_html='reebokfiori.html'),
+        dict(nombre='Reebok Floatzig', marca='Reebok', precio=1000, pagina_html='reebokfloatzig.html'),
+        dict(nombre='Reebok Nano', marca='Reebok', precio=1300, pagina_html='reeBoknano.html'),
+        dict(nombre='Reebok Phase Court', marca='Reebok', precio=700, pagina_html='reebokphasecourt.html'),
+        dict(nombre='Reebok Question', marca='Reebok', precio=1500, pagina_html='reebokquestion.html'),
+    ]
+
+    inserted, updated = 0, 0
+    for p in productos_def:
+        existente = Producto.query.filter_by(pagina_html=p['pagina_html']).first()
+        if existente:
+            # Actualizar precio y campos básicos si cambiaron
+            cambios = 0
+            if existente.precio != p['precio']:
+                existente.precio = p['precio']
+                cambios += 1
+            if existente.nombre != p['nombre']:
+                existente.nombre = p['nombre']
+                cambios += 1
+            if existente.marca != p['marca']:
+                existente.marca = p['marca']
+                cambios += 1
+            if existente.tallas_disponibles != tallas_default:
+                existente.tallas_disponibles = tallas_default
+                cambios += 1
+            if cambios:
+                updated += 1
+        else:
+            nuevo = Producto(
+                nombre=p['nombre'],
+                marca=p['marca'],
+                precio=p['precio'],
+                tallas_disponibles=tallas_default,
+                imagen_ruta=None,
+                pagina_html=p['pagina_html']
+            )
+            db.session.add(nuevo)
+            inserted += 1
+
+    if inserted or updated:
+        db.session.commit()
+    print(f"✅ Productos: insertados={inserted}, actualizados={updated}, total={Producto.query.count()}")
+
 # Inicializar la base de datos
 try:
     with app.app_context():
         db.create_all()
-        
-        # Insertar productos Nike si no existen
-        if Producto.query.count() == 0:
-            productos_nike = [
-                Producto(
-                    nombre='Nike Gato SB',
-                    marca='Nike',
-                    precio=1000,
-                    tallas_disponibles='5.5,6,6.5,7,7.5,8,8.5,9,9.5,10',
-                    imagen_ruta='/static/img/nike/Nike Gato SB',
-                    pagina_html='nikegato.html'
-                ),
-                Producto(
-                    nombre='Nike Air Jordan 1 Mid',
-                    marca='Nike',
-                    precio=1400,
-                    tallas_disponibles='5.5,6,6.5,7,7.5,8,8.5,9,9.5,10',
-                    imagen_ruta='/static/img/nike/Air Jordan 1 Mid',
-                    pagina_html='nikeairjordan1mid.html'
-                ),
-                Producto(
-                    nombre='Nike Air Max Nuaxis',
-                    marca='Nike',
-                    precio=1200,
-                    tallas_disponibles='5.5,6,6.5,7,7.5,8,8.5,9,9.5,10',
-                    imagen_ruta='/static/img/nike/Nike Air Max Nuaxis',
-                    pagina_html='nikeairmaxnuaxis.html'
-                ),
-                Producto(
-                    nombre='Nike P-6000',
-                    marca='Nike',
-                    precio=1100,
-                    tallas_disponibles='5.5,6,6.5,7,7.5,8,8.5,9,9.5,10',
-                    imagen_ruta='/static/img/nike/Nike P-6000',
-                    pagina_html='nikep6000.html'
-                ),
-                Producto(
-                    nombre='Nike Pegasus Plus',
-                    marca='Nike',
-                    precio=1300,
-                    tallas_disponibles='5.5,6,6.5,7,7.5,8,8.5,9,9.5,10',
-                    imagen_ruta='/static/img/nike/Nike Pegasus Plus',
-                    pagina_html='nikepegasusplus.html'
-                ),
-                Producto(
-                    nombre='Nike Premier III',
-                    marca='Nike',
-                    precio=950,
-                    tallas_disponibles='5.5,6,6.5,7,7.5,8,8.5,9,9.5,10',
-                    imagen_ruta='/static/img/nike/Nike Premier III',
-                    pagina_html='nikepremieriii.html'
-                )
-            ]
-            
-            db.session.add_all(productos_nike)
-            db.session.commit()
-            print("✅ 6 productos Nike insertados en la BD")
-        else:
-            print(f"✅ BD ya tiene {Producto.query.count()} productos")
-            
+        seed_or_update_products()
 except Exception as e:
     print(f"Error al inicializar BD: {e}")
 
@@ -294,9 +327,9 @@ def cuenta():
         # Validar contraseñas si se proporcionaron
         if new_password:
             if new_password != confirm_password:
-                return render_template('ventanas/cuenta.html', usuario=usuario)
+                return render_template('ventanas/cuenta.html', usuario=usuario, error_password='Las contraseñas no coinciden')
             if len(new_password) < 6:
-                return render_template('ventanas/cuenta.html', usuario=usuario)
+                return render_template('ventanas/cuenta.html', usuario=usuario, error_password='La contraseña debe tener al menos 6 caracteres')
         
         # Actualizar datos del usuario
         usuario.nombres = nombres
@@ -459,127 +492,157 @@ def nikepremieriii():
 
 @app.route('/adidassamba.html')
 def adidassamba():
-    return render_template('productosAdidas/adidassamba.html')
+    producto = Producto.query.filter_by(pagina_html='adidassamba.html').first()
+    return render_template('productosAdidas/adidassamba.html', producto=producto)
 
 @app.route('/adidaskaptir.html')
 def adidaskaptir():
-    return render_template('productosAdidas/adidaskaptir.html')
+    producto = Producto.query.filter_by(pagina_html='adidaskaptir.html').first()
+    return render_template('productosAdidas/adidaskaptir.html', producto=producto)
 
 @app.route('/adidasadizero.html')
 def adidasadizero():
-    return render_template('productosAdidas/adidasadizero.html')
+    producto = Producto.query.filter_by(pagina_html='adidasadizero.html').first()
+    return render_template('productosAdidas/adidasadizero.html', producto=producto)
 
 @app.route('/adidascampus.html')
 def adidascampus():
-    return render_template('productosAdidas/adidascampus.html')
+    producto = Producto.query.filter_by(pagina_html='adidascampus.html').first()
+    return render_template('productosAdidas/adidascampus.html', producto=producto)
 
 @app.route('/adidasgazelle.html')
 def adidasgazelle():
-    return render_template('productosAdidas/adidasgazelle.html')
+    producto = Producto.query.filter_by(pagina_html='adidasgazelle.html').first()
+    return render_template('productosAdidas/adidasgazelle.html', producto=producto)
 
 @app.route('/adidasultraboost.html')
 def adidasultraboost():
-    return render_template('productosAdidas/adidasultraboost.html')
+    producto = Producto.query.filter_by(pagina_html='adidasultraboost.html').first()
+    return render_template('productosAdidas/adidasultraboost.html', producto=producto)
 
 # PRODUCTOS NEW BALANCE
 @app.route('/newbalance2002r.html')
 def newbalance2002r():
-    return render_template('productosNewBalance/newbalance2002r.html')
+    producto = Producto.query.filter_by(pagina_html='newbalance2002r.html').first()
+    return render_template('productosNewBalance/newbalance2002r.html', producto=producto)
 
 @app.route('/newbalance574.html')
 def newbalance574():
-    return render_template('productosNewBalance/newbalance574.html')
+    producto = Producto.query.filter_by(pagina_html='newbalance574.html').first()
+    return render_template('productosNewBalance/newbalance574.html', producto=producto)
 
 @app.route('/newbalance740.html')
 def newbalance740():
-    return render_template('productosNewBalance/newbalance740.html')
+    producto = Producto.query.filter_by(pagina_html='newbalance740.html').first()
+    return render_template('productosNewBalance/newbalance740.html', producto=producto)
 
 @app.route('/newbalance9060.html')
 def newbalance9060():
-    return render_template('productosNewBalance/newbalance9060.html')
+    producto = Producto.query.filter_by(pagina_html='newbalance9060.html').first()
+    return render_template('productosNewBalance/newbalance9060.html', producto=producto)
 
 @app.route('/newbalance990v6.html')
 def newbalance990v6():
-    return render_template('productosNewBalance/newbalance990v6.html')
+    producto = Producto.query.filter_by(pagina_html='newbalance990v6.html').first()
+    return render_template('productosNewBalance/newbalance990v6.html', producto=producto)
 
 @app.route('/newbalance997r.html')
 def newbalance997r():
-    return render_template('productosNewBalance/newbalance997r.html')
+    producto = Producto.query.filter_by(pagina_html='newbalance997r.html').first()
+    return render_template('productosNewBalance/newbalance997r.html', producto=producto)
 
 # PRODUCTOS CONVERSE
 @app.route('/conversechuck70.html')
 def conversechuck70():
-    return render_template('productosConverse/conversechuck70.html')
+    producto = Producto.query.filter_by(pagina_html='conversechuck70.html').first()
+    return render_template('productosConverse/conversechuck70.html', producto=producto)
 
 @app.route('/conversechucktaylor.html')
 def conversechucktaylor():
-    return render_template('productosConverse/conversechucktaylor.html')
+    producto = Producto.query.filter_by(pagina_html='conversechucktaylor.html').first()
+    return render_template('productosConverse/conversechucktaylor.html', producto=producto)
 
 @app.route('/conversecl98.html')
 def conversecl98():
-    return render_template('productosConverse/conversecl98.html')
+    producto = Producto.query.filter_by(pagina_html='conversecl98.html').first()
+    return render_template('productosConverse/conversecl98.html', producto=producto)
 
 @app.route('/conversefastbreak.html')
 def conversefastbreak():
-    return render_template('productosConverse/conversefastbreak.html')
+    producto = Producto.query.filter_by(pagina_html='conversefastbreak.html').first()
+    return render_template('productosConverse/conversefastbreak.html', producto=producto)
 
 @app.route('/converserunstar.html')
 def converserunstar():
-    return render_template('productosConverse/converserunstar.html')
+    producto = Producto.query.filter_by(pagina_html='converserunstar.html').first()
+    return render_template('productosConverse/converserunstar.html', producto=producto)
 
 @app.route('/conversewave.html')
 def conversewave():
-    return render_template('productosConverse/conversewave.html')
+    producto = Producto.query.filter_by(pagina_html='conversewave.html').first()
+    return render_template('productosConverse/conversewave.html', producto=producto)
 
 # PRODUCTOS VANS
 @app.route('/vanschukka.html')
 def vanschukka():
-    return render_template('productosVans/vanschukka.html')
+    producto = Producto.query.filter_by(pagina_html='vanschukka.html').first()
+    return render_template('productosVans/vanschukka.html', producto=producto)
 
 @app.route('/vansclassicslip.html')
 def vansclassicslip():
-    return render_template('productosVans/vansclassicslip.html')
+    producto = Producto.query.filter_by(pagina_html='vansclassicslip.html').first()
+    return render_template('productosVans/vansclassicslip.html', producto=producto)
 
 @app.route('/vansoldskool.html')
 def vansoldskool():
-    return render_template('productosVans/vansoldskool.html')
+    producto = Producto.query.filter_by(pagina_html='vansoldskool.html').first()
+    return render_template('productosVans/vansoldskool.html', producto=producto)
 
 @app.route('/vanssk8hi.html')
 def vanssk8hi():
-    return render_template('productosVans/vanssk8hi.html')
+    producto = Producto.query.filter_by(pagina_html='vanssk8hi.html').first()
+    return render_template('productosVans/vanssk8hi.html', producto=producto)
 
 @app.route('/vanssuperlowpro.html')
 def vanssuperlowpro():
-    return render_template('productosVans/vanssuperlowpro.html')
+    producto = Producto.query.filter_by(pagina_html='vanssuperlowpro.html').first()
+    return render_template('productosVans/vanssuperlowpro.html', producto=producto)
 
 @app.route('/vansultrarange.html')
 def vansultrarange():
-    return render_template('productosVans/vansultrarange.html')
+    producto = Producto.query.filter_by(pagina_html='vansultrarange.html').first()
+    return render_template('productosVans/vansultrarange.html', producto=producto)
 
 # PRODUCTOS REEBOK
 @app.route('/reebokclassicnylon.html')
 def reebokclassicnylon():
-    return render_template('productosReebok/reebokclassicnylon.html')
+    producto = Producto.query.filter_by(pagina_html='reebokclassicnylon.html').first()
+    return render_template('productosReebok/reebokclassicnylon.html', producto=producto)
 
 @app.route('/reebokfiori.html')
 def reebokfiori():
-    return render_template('productosReebok/reebokfiori.html')
+    producto = Producto.query.filter_by(pagina_html='reebokfiori.html').first()
+    return render_template('productosReebok/reebokfiori.html', producto=producto)
 
 @app.route('/reebokfloatzig.html')
 def reebokfloatzig():
-    return render_template('productosReebok/reebokfloatzig.html')
+    producto = Producto.query.filter_by(pagina_html='reebokfloatzig.html').first()
+    return render_template('productosReebok/reebokfloatzig.html', producto=producto)
 
 @app.route('/reeBoknano.html')
 def reeBoknano():
-    return render_template('productosReebok/reeBoknano.html')
+    producto = Producto.query.filter_by(pagina_html='reeBoknano.html').first()
+    return render_template('productosReebok/reeBoknano.html', producto=producto)
 
 @app.route('/reebokphasecourt.html')
 def reebokphasecourt():
-    return render_template('productosReebok/reebokphasecourt.html')
+    producto = Producto.query.filter_by(pagina_html='reebokphasecourt.html').first()
+    return render_template('productosReebok/reebokphasecourt.html', producto=producto)
 
 @app.route('/reebokquestion.html')
 def reebokquestion():
-    return render_template('productosReebok/reebokquestion.html')
+    producto = Producto.query.filter_by(pagina_html='reebokquestion.html').first()
+    return render_template('productosReebok/reebokquestion.html', producto=producto)
 
 if __name__ == '__main__':
     import os

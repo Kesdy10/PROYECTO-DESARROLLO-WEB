@@ -31,6 +31,12 @@
 <main class="perfil">
     <br>
     <h1>Mi Cuenta</h1><br>
+
+    {% if error_password %}
+      <div style="background:#ffe5e5; color:#b10000; border:1px solid #ffb3b3; padding:10px 14px; border-radius:8px; margin-bottom:16px; font-size:18px;">
+        {{ error_password }}
+      </div>
+    {% endif %}
     
     <form class="formulario-perfil" method="POST">
 
@@ -70,7 +76,7 @@
                    type="text" id="direccion" name="direccion" value="{{ usuario.direccion or '' }}">
         </div>
 
-        <div style="display:flex; align-items:center; gap:8px;">
+    <div style="display:flex; align-items:center; gap:8px;">
             <label style="font-size:22px; width:120px;" for="new_password">Nueva contraseña:</label>
             <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" 
                    type="password" id="new_password" name="new_password" placeholder="Dejar vacío para no cambiar">

@@ -176,10 +176,6 @@ def internal_error(error):
     db.session.rollback()
     return render_template('ventanas/login.html'), 500
 
-# Error 404 deshabilitado - causaba problemas con el carrito
-# @app.errorhandler(404)
-# def not_found_error(error):
-#     return redirect(url_for('login'))
 
 @app.route('/')
 def login():
@@ -361,23 +357,39 @@ def contacto():
 
 @app.route('/carrito.html')
 def carrito():
+    # DEBUG: Ver qué está pasando
+    print("=== ENTRANDO A CARRITO ===")
+    print(f"Session completa: {dict(session)}")
+    
     # Obtener carrito de la sesión (funciona con o sin login)
     carrito_items = session.get('carrito', [])
+    print(f"Items en carrito: {carrito_items}")
+    print("=== FIN DEBUG CARRITO ===")
+    
     return render_template('ventanas/carrito.html', carrito_items=carrito_items)
 
 @app.route('/agregar_carrito', methods=['POST'])
 def agregar_carrito():
+    # DEBUG
+    print("=== AGREGANDO AL CARRITO ===")
+    print(f"Form data: {dict(request.form)}")
+    print(f"Session ANTES: {dict(session)}")
+    
     # Obtener datos del formulario
     nombre_producto = request.form.get('nombre_producto')
     talla = request.form.get('talla')
     precio = request.form.get('precio', '0')
     
+    print(f"Producto: {nombre_producto}, Talla: {talla}, Precio: {precio}")
+    
     if not nombre_producto or not talla:
+        print("FALTA nombre o talla - redirigiendo")
         return redirect(request.referrer)
     
     # Inicializar carrito si no existe
     if 'carrito' not in session:
         session['carrito'] = []
+        print("Carrito inicializado vacío")
     
     # Agregar producto al carrito
     item = {
@@ -388,6 +400,10 @@ def agregar_carrito():
     
     session['carrito'].append(item)
     session.modified = True
+    
+    print(f"Session DESPUÉS: {dict(session)}")
+    print(f"Redirigiendo a: {request.referrer}")
+    print("=== FIN AGREGAR CARRITO ===")
     
     return redirect(request.referrer)
 

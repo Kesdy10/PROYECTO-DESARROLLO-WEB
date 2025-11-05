@@ -76,8 +76,8 @@
             {% endif %}
         </div>
         {% if carrito_items %}
-            <form method="POST" action="{{ url_for('confirmar_pedido') }}">
-                <button type="submit" style="font-size: 22px; margin-bottom: 30px; padding: 5px; width: 275px;" id="confirmarPedido">Confirmar pedido</button>
+            <form method="POST" action="{{ url_for('confirmar_pedido') }}" id="formConfirmar">
+                <button type="button" style="font-size: 22px; margin-bottom: 30px; padding: 5px; width: 275px;" onclick="mostrarConfirmacion()">Confirmar pedido</button>
             </form>
         {% else %}
             <button style="font-size: 22px; margin-bottom: 30px; padding: 5px; width: 275px;" id="confirmarPedido" disabled>Confirmar pedido</button>
@@ -89,5 +89,19 @@
     &copy; 2025 Don Gato. Todos los derechos reservados.
 </footer>
 <script src="/static/js/script.js"></script>
+<script>
+function mostrarConfirmacion() {
+    {% if usuario %}
+    const mensaje = `Se enviará a:\n\nDirección: {{ usuario.direccion or 'No especificada' }}\n\nNombre: {{ usuario.nombres }} {{ usuario.apellidos or '' }}\nCorreo: {{ usuario.email }}\nTeléfono: {{ usuario.telefono or 'No especificado' }}`;
+    
+    if (confirm(mensaje + '\n\n¿Deseas confirmar el pedido?')) {
+        document.getElementById('formConfirmar').submit();
+    }
+    {% else %}
+    alert('Debes iniciar sesión para confirmar tu pedido');
+    window.location.href = "{{ url_for('login_page') }}";
+    {% endif %}
+}
+</script>
 </body>
 </html>

@@ -442,7 +442,13 @@ def carrito():
             }
 
     carrito_agregado = list(grupos.values())
-    return render_template('ventanas/carrito.html', carrito_items=carrito_agregado)
+    
+    # Obtener datos del usuario si está logueado
+    usuario = None
+    if 'user_id' in session:
+        usuario = Usuario.query.get(session['user_id'])
+    
+    return render_template('ventanas/carrito.html', carrito_items=carrito_agregado, usuario=usuario)
 
 @app.route('/agregar_carrito', methods=['POST'])
 def agregar_carrito():

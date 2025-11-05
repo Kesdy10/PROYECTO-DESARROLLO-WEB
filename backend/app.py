@@ -93,6 +93,57 @@ def health_check():
             'error': str(e)
         }, 500
 
+@app.route('/admin/usuarios')
+def ver_usuarios():
+    """Ver todos los usuarios registrados - Solo para debugging"""
+    try:
+        usuarios = Usuario.query.all()
+        usuarios_data = []
+        for usuario in usuarios:
+            usuarios_data.append({
+                'id': usuario.id,
+                'nombres': usuario.nombres,
+                'apellidos': usuario.apellidos,
+                'email': usuario.email,
+                'telefono': usuario.telefono,
+                'direccion': usuario.direccion,
+                'nacimiento': usuario.nacimiento.strftime('%Y-%m-%d') if usuario.nacimiento else None,
+                'fecha_registro': usuario.fecha_registro.strftime('%Y-%m-%d %H:%M:%S') if hasattr(usuario, 'fecha_registro') and usuario.fecha_registro else 'No disponible'
+            })
+        
+        return {
+            'total_usuarios': len(usuarios),
+            'usuarios': usuarios_data
+        }, 200
+    except Exception as e:
+        return {
+            'error': str(e)
+        }, 500
+
+@app.route('/admin/mensajes')
+def ver_mensajes():
+    """Ver todos los mensajes de contacto - Solo para debugging"""
+    try:
+        mensajes = Mensaje.query.all()
+        mensajes_data = []
+        for mensaje in mensajes:
+            mensajes_data.append({
+                'id': mensaje.id,
+                'nombre': mensaje.nombre,
+                'correo': mensaje.correo,
+                'mensaje': mensaje.mensaje,
+                'fecha_envio': mensaje.fecha_envio.strftime('%Y-%m-%d %H:%M:%S')
+            })
+        
+        return {
+            'total_mensajes': len(mensajes),
+            'mensajes': mensajes_data
+        }, 200
+    except Exception as e:
+        return {
+            'error': str(e)
+        }, 500
+
 # Manejo global de errores
 @app.errorhandler(500)
 def internal_error(error):

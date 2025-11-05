@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Don Gato</title>
-    <link rel="stylesheet" href="/static/css/estilos.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}">
 </head>
 <body>
@@ -17,13 +17,13 @@
 
     <div class="derecha">
             <a href="{{ url_for('cuenta') }}" class="cuenta">
-            <img src="/static/img/encabezado/perfil.png" alt="Cuenta">
+            <img src="{{ url_for('static', filename='img/encabezado/perfil.png') }}" alt="Cuenta">
         </a>
             <a href="{{ url_for('contacto') }}" class="contacto">
-            <img src="/static/img/encabezado/mensaje.png" alt="Contacto">
+            <img src="{{ url_for('static', filename='img/encabezado/mensaje.png') }}" alt="Contacto">
         </a>
             <a href="{{ url_for('carrito') }}" class="carrito">
-            <img src="/static/img/encabezado/carrito.png" alt="Carrito">
+            <img src="{{ url_for('static', filename='img/encabezado/carrito.png') }}" alt="Carrito">
         </a>
     </div>
 </header>
@@ -32,28 +32,28 @@
     <div class="cuenta">
         <br>
         <h1>Carrito</h1>
-        <table style="width:100%; font-size:18px; margin-bottom:20px; border-collapse: collapse;">
+        <table style="width:100%; font-size:18px; margin-bottom:20px;">
             <thead>
-                <tr style="background-color: #f2f2f2;">
-                    <th style="text-align: left; padding: 12px; border-bottom: 2px solid #ddd;">Producto</th>
-                    <th style="text-align: center; padding: 12px; border-bottom: 2px solid #ddd; width: 100px;">Cantidad</th>
-                    <th style="text-align: center; padding: 12px; border-bottom: 2px solid #ddd; width: 100px;">Precio</th>
-                    <th style="text-align: center; padding: 12px; border-bottom: 2px solid #ddd; width: 100px;">Subtotal</th>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Subtotal</th>
                 </tr>
             </thead>
             <tbody id="carrito-productos">
                 {% if carrito_items %}
                     {% for item in carrito_items %}
-                        <tr style="border-bottom: 1px solid #ddd;">
-                            <td style="padding: 12px; text-align: left;">{{ item.nombre }} - Talla {{ item.talla }}</td>
-                            <td style="padding: 12px; text-align: center;">1</td>
-                            <td style="padding: 12px; text-align: center;">Q{{ item.precio }}</td>
-                            <td style="padding: 12px; text-align: center;">Q{{ item.precio }}</td>
-                        </tr>
+                    <tr>
+                        <td>{{ item.nombre }} - Talla {{ item.talla }}</td>
+                        <td>1</td>
+                        <td>Q{{ item.precio }}</td>
+                        <td>Q{{ item.precio }}</td>
+                    </tr>
                     {% endfor %}
                 {% else %}
                     <tr>
-                        <td colspan="4" style="padding: 20px; text-align: center; color: #666;">El carrito está vacío</td>
+                        <td colspan="4" style="text-align: center;">El carrito está vacío</td>
                     </tr>
                 {% endif %}
             </tbody>

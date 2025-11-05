@@ -282,10 +282,7 @@ def contacto():
 
 @app.route('/carrito.html')
 def carrito():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    
-    # Obtener carrito de la sesión
+    # Obtener carrito de la sesión (funciona con o sin login)
     carrito_items = session.get('carrito', [])
     return render_template('ventanas/carrito.html', carrito_items=carrito_items)
 

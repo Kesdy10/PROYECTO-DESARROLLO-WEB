@@ -176,9 +176,10 @@ def internal_error(error):
     db.session.rollback()
     return render_template('ventanas/login.html'), 500
 
-@app.errorhandler(404)
-def not_found_error(error):
-    return redirect(url_for('login'))
+# Error 404 deshabilitado - causaba problemas con el carrito
+# @app.errorhandler(404)
+# def not_found_error(error):
+#     return redirect(url_for('login'))
 
 @app.route('/')
 def login():

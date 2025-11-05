@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
@@ -8,7 +8,7 @@ import os
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
 # Configuración de la base de datos
-app.config['SECRET_KEY'] = 'tu_clave_secreta_muy_segura_para_railway_2024'  
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'tu_clave_secreta_muy_segura_para_railway_2024')  
 
 # Configurar base de datos PostgreSQL para Railway
 database_url = os.environ.get('DATABASE_URL')
@@ -19,8 +19,9 @@ if database_url:
     app.config['SQLALCHEMY_DATABASE_URI'] = database_url
     print(f"✅ Conectando a PostgreSQL: {database_url[:30]}...")
 else:
-    print("❌ No se encontró DATABASE_URL")
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://default:default@localhost/default'
+    # Fallback local a SQLite para evitar errores cuando no hay PostgreSQL local
+    print("❌ No se encontró DATABASE_URL — usando SQLite local (dongato.db)")
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///dongato.db'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
@@ -74,8 +75,8 @@ class Producto(db.Model):
         return f'<Producto {self.nombre}>'
     
     def get_tallas(self):
-        """Retorna lista de tallas disponibles"""
-        return [int(t) for t in self.tallas_disponibles.split(',')]
+        """Retorna lista de tallas disponibles como strings (soporta medias tallas)."""
+        return [t.strip() for t in self.tallas_disponibles.split(',') if t.strip()]
 
 # Inicializar la base de datos
 try:
@@ -89,7 +90,7 @@ try:
                     nombre='Nike Gato SB',
                     marca='Nike',
                     precio=1000,
-                    tallas_disponibles='6,7,8,9,10,11,12',
+                    tallas_disponibles='5.5,6,6.5,7,7.5,8,8.5,9,9.5,10',
                     imagen_ruta='/static/img/nike/Nike Gato SB',
                     pagina_html='nikegato.html'
                 ),
@@ -97,7 +98,7 @@ try:
                     nombre='Nike Air Jordan 1 Mid',
                     marca='Nike',
                     precio=1400,
-                    tallas_disponibles='6,7,8,9,10,11,12',
+                    tallas_disponibles='5.5,6,6.5,7,7.5,8,8.5,9,9.5,10',
                     imagen_ruta='/static/img/nike/Air Jordan 1 Mid',
                     pagina_html='nikeairjordan1mid.html'
                 ),
@@ -105,7 +106,7 @@ try:
                     nombre='Nike Air Max Nuaxis',
                     marca='Nike',
                     precio=1200,
-                    tallas_disponibles='6,7,8,9,10,11,12',
+                    tallas_disponibles='5.5,6,6.5,7,7.5,8,8.5,9,9.5,10',
                     imagen_ruta='/static/img/nike/Nike Air Max Nuaxis',
                     pagina_html='nikeairmaxnuaxis.html'
                 ),
@@ -113,7 +114,7 @@ try:
                     nombre='Nike P-6000',
                     marca='Nike',
                     precio=1100,
-                    tallas_disponibles='6,7,8,9,10,11,12',
+                    tallas_disponibles='5.5,6,6.5,7,7.5,8,8.5,9,9.5,10',
                     imagen_ruta='/static/img/nike/Nike P-6000',
                     pagina_html='nikep6000.html'
                 ),
@@ -121,7 +122,7 @@ try:
                     nombre='Nike Pegasus Plus',
                     marca='Nike',
                     precio=1300,
-                    tallas_disponibles='6,7,8,9,10,11,12',
+                    tallas_disponibles='5.5,6,6.5,7,7.5,8,8.5,9,9.5,10',
                     imagen_ruta='/static/img/nike/Nike Pegasus Plus',
                     pagina_html='nikepegasusplus.html'
                 ),
@@ -129,7 +130,7 @@ try:
                     nombre='Nike Premier III',
                     marca='Nike',
                     precio=950,
-                    tallas_disponibles='6,7,8,9,10,11,12',
+                    tallas_disponibles='5.5,6,6.5,7,7.5,8,8.5,9,9.5,10',
                     imagen_ruta='/static/img/nike/Nike Premier III',
                     pagina_html='nikepremieriii.html'
                 )
@@ -197,8 +198,8 @@ def login_page():
             session['user_id'] = usuario.id
             session['user_name'] = usuario.nombres + ' ' + (usuario.apellidos or '')
             return redirect(url_for('index'))
-        else:
-            pass
+        # Credenciales inválidas: volver a mostrar login (sin mensajes flash)
+        return render_template('ventanas/login.html')
     
     return render_template('ventanas/login.html')
 
@@ -237,7 +238,6 @@ def crear_cuenta():
         
         # Manejar fecha de nacimiento
         if nacimiento:
-            from datetime import datetime
             nuevo_usuario.nacimiento = datetime.strptime(nacimiento, '%Y-%m-%d').date()
         
         nuevo_usuario.set_password(password)
@@ -272,15 +272,15 @@ def cuenta():
     usuario = Usuario.query.get(session['user_id'])
     
     if request.method == 'POST':
-        # Obtener datos del formulario
-        nombres = request.form.get('nombres')
-        apellidos = request.form.get('apellidos')
-        email = request.form.get('email')
-        telefono = request.form.get('telefono')
-        nacimiento = request.form.get('nacimiento')
-        direccion = request.form.get('direccion')
-        new_password = request.form.get('new_password')
-        confirm_password = request.form.get('confirm_password')
+        # Obtener datos del formulario (normalizados)
+        nombres = (request.form.get('nombres') or '').strip()
+        apellidos = (request.form.get('apellidos') or '').strip()
+        email = (request.form.get('email') or '').strip()
+        telefono = (request.form.get('telefono') or '').strip()
+        nacimiento = (request.form.get('nacimiento') or '').strip()
+        direccion = (request.form.get('direccion') or '').strip()
+        new_password = (request.form.get('new_password') or '').strip()
+        confirm_password = (request.form.get('confirm_password') or '').strip()
         
         # Validaciones
         if not nombres or not email:
@@ -308,7 +308,6 @@ def cuenta():
         # Convertir fecha de nacimiento
         if nacimiento:
             try:
-                from datetime import datetime
                 usuario.nacimiento = datetime.strptime(nacimiento, '%Y-%m-%d').date()
             except ValueError:
                 return render_template('ventanas/cuenta.html', usuario=usuario)
@@ -320,6 +319,8 @@ def cuenta():
         try:
             db.session.commit()
             session['user_name'] = nombres  # Actualizar nombre en sesión
+            # Redirigir para evitar reenvío de formulario y refrescar datos desde la BD
+            return redirect(url_for('cuenta'))
         except Exception as e:
             db.session.rollback()
     
@@ -357,54 +358,34 @@ def contacto():
 
 @app.route('/carrito.html')
 def carrito():
-    # DEBUG: Ver qué está pasando
-    print("=== ENTRANDO A CARRITO ===")
-    print(f"Session completa: {dict(session)}")
-    
     # Obtener carrito de la sesión (funciona con o sin login)
     carrito_items = session.get('carrito', [])
-    print(f"Items en carrito: {carrito_items}")
-    print("=== FIN DEBUG CARRITO ===")
-    
     return render_template('ventanas/carrito.html', carrito_items=carrito_items)
 
 @app.route('/agregar_carrito', methods=['POST'])
 def agregar_carrito():
-    # DEBUG
-    print("=== AGREGANDO AL CARRITO ===")
-    print(f"Form data: {dict(request.form)}")
-    print(f"Session ANTES: {dict(session)}")
-    
     # Obtener datos del formulario
     nombre_producto = request.form.get('nombre_producto')
     talla = request.form.get('talla')
     precio = request.form.get('precio', '0')
-    
-    print(f"Producto: {nombre_producto}, Talla: {talla}, Precio: {precio}")
-    
+
     if not nombre_producto or not talla:
-        print("FALTA nombre o talla - redirigiendo")
         return redirect(request.referrer)
-    
+
     # Inicializar carrito si no existe
     if 'carrito' not in session:
         session['carrito'] = []
-        print("Carrito inicializado vacío")
-    
+
     # Agregar producto al carrito
     item = {
         'nombre': nombre_producto,
         'talla': talla,
         'precio': precio
     }
-    
+
     session['carrito'].append(item)
     session.modified = True
-    
-    print(f"Session DESPUÉS: {dict(session)}")
-    print(f"Redirigiendo a: {request.referrer}")
-    print("=== FIN AGREGAR CARRITO ===")
-    
+
     return redirect(request.referrer)
 
 @app.route('/confirmar_pedido', methods=['POST'])

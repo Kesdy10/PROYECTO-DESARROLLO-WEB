@@ -237,19 +237,14 @@ def recuperar_password():
         nueva_password = request.form.get('nueva_password')
         confirmar_password = request.form.get('confirmar_password')
         
-        # Validaciones básicas
+        # Validaciones básicas (igual que crear cuenta)
         if not email or not nueva_password or not confirmar_password:
             flash('Todos los campos son requeridos', 'error')
             return render_template('ventanas/recuperarPassword.html')
         
-        # Validar que las contraseñas coincidan
+        # Validar que las contraseñas coincidan (igual que crear cuenta)
         if nueva_password != confirmar_password:
             flash('Las contraseñas no coinciden', 'error')
-            return render_template('ventanas/recuperarPassword.html')
-        
-        # Validar mínimo 8 caracteres
-        if len(nueva_password) < 8:
-            flash('La contraseña debe tener mínimo 8 caracteres', 'error')
             return render_template('ventanas/recuperarPassword.html')
         
         # Buscar usuario por email

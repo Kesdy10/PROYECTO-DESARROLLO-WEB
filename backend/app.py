@@ -305,8 +305,62 @@ def contacto():
 def carrito():
     if 'user_id' not in session:
         flash('Debes iniciar sesión primero', 'error')
-        return redirect(url_for('login'))  # Cambiado
-    return render_template('ventanas/carrito.html')
+        return redirect(url_for('login'))
+    
+    # Obtener carrito de la sesión
+    carrito_items = session.get('carrito', [])
+    return render_template('ventanas/carrito.html', carrito_items=carrito_items)
+
+@app.route('/agregar_carrito', methods=['POST'])
+def agregar_carrito():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    # Obtener datos del formulario
+    nombre_producto = request.form.get('nombre_producto')
+    talla = request.form.get('talla')
+    
+    if not nombre_producto or not talla:
+        flash('Debes seleccionar una talla', 'error')
+        return redirect(request.referrer)
+    
+    # Inicializar carrito si no existe
+    if 'carrito' not in session:
+        session['carrito'] = []
+    
+    # Agregar producto al carrito
+    item = {
+        'nombre': nombre_producto,
+        'talla': talla
+    }
+    
+    session['carrito'].append(item)
+    session.modified = True
+    
+    flash(f'Producto agregado al carrito: {nombre_producto} - Talla {talla}', 'success')
+    return redirect(request.referrer)
+
+@app.route('/confirmar_pedido', methods=['POST'])
+def confirmar_pedido():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    # Obtener usuario actual
+    usuario = Usuario.query.get(session['user_id'])
+    carrito_items = session.get('carrito', [])
+    
+    if not carrito_items:
+        flash('Tu carrito está vacío', 'error')
+        return redirect(url_for('carrito'))
+    
+    direccion = usuario.direccion if usuario.direccion else "dirección no especificada"
+    
+    # Limpiar carrito
+    session['carrito'] = []
+    session.modified = True
+    
+    flash(f'¡Pedido confirmado! Se enviará a: {direccion}', 'success')
+    return redirect(url_for('carrito'))
 
 # MARCAS
 @app.route('/nike.html')

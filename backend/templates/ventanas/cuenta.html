@@ -17,11 +17,8 @@
 
     <div class="derecha">
       <!-- Mostrar nombre del usuario logueado -->
-      <div style="color: white; font-size: 18px; margin-right: 15px; display: flex; align-items: center;">
+      <div style="color: white; font-size: 24px; font-family: Arial, sans-serif; margin-right: 15px; display: flex; align-items: center;">
           ¡Hola, {{ session.user_name }}! 
-          <a href="{{ url_for('logout') }}" style="margin-left: 10px; color: #ffcccc; text-decoration: none; font-size: 14px;">
-              [Cerrar sesión]
-          </a>
       </div>
       <a href="{{ url_for('cuenta') }}" class="cuenta">
         <img src="{{ url_for('static', filename='img/encabezado/perfil.png') }}" alt="Cuenta">
@@ -38,16 +35,6 @@
 <main class="perfil">
     <br>
     <h1>Mi Cuenta</h1><br>
-    
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="flash {{ category }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
     
     <form class="formulario-perfil" method="POST">
 
@@ -106,6 +93,11 @@
             <a href="{{ url_for('index') }}">
                 <button type="button" style="font-size:22px; padding:8px 20px; border:none; cursor:pointer; border-radius:8px; background-color:rgb(231, 80, 80);">
                     Cancelar
+                </button>
+            </a>
+            <a href="{{ url_for('logout') }}">
+                <button type="button" style="font-size:22px; padding:8px 20px; border:none; cursor:pointer; border-radius:8px; background-color:rgb(255, 165, 0);">
+                    Cerrar sesión
                 </button>
             </a>
         </div>

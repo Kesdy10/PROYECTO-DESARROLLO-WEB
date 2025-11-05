@@ -33,19 +33,6 @@
             <br>        
             <h1>Contáctanos</h1>
             
-            <!-- Mostrar mensajes de error/éxito -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div style="padding: 10px; margin: 10px 0; border-radius: 5px; text-align: center;
-                             background-color: {% if category == 'error' %}#f8d7da{% else %}#d1e7dd{% endif %};
-                             color: {% if category == 'error' %}#721c24{% else %}#155724{% endif %};">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-            
             <form method="POST">
                 <div>
                     <input style="font-size: 22px;" type="text" name="nombre" placeholder="Nombre" required>

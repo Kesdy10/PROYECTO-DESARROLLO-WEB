@@ -45,6 +45,13 @@ document.addEventListener('DOMContentLoaded', function() {
             tallas.forEach(t => t.classList.remove('selected'));
             talla.classList.add('selected');
             tallaSeleccionada = talla.dataset.talla;
+            
+            // Actualizar el campo hidden del formulario
+            const tallaInput = document.getElementById('talla-seleccionada');
+            if (tallaInput) {
+                tallaInput.value = tallaSeleccionada;
+            }
+            
             if (btnAgregar) {
                 btnAgregar.disabled = false;
                 btnAgregar.classList.add('enabled');
@@ -52,23 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    if (btnAgregar) {
-        btnAgregar.addEventListener('click', () => {
-            if (tallaSeleccionada) {
-                // Obtener información del producto desde el DOM
-                const nombreProducto = document.querySelector('.titulo-producto')?.textContent || 'Producto';
-                const precioTexto = document.querySelector('.precio-producto')?.textContent || 'Q0';
-                const precio = parseInt(precioTexto.replace('Q', '')) || 0;
-                
-                let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-                carrito.push({
-                    producto: nombreProducto,
-                    talla: tallaSeleccionada,
-                    precio: precio
-                });
-                localStorage.setItem('carrito', JSON.stringify(carrito));
-                alert(`Agregado al carrito: ${nombreProducto}, Talla ${tallaSeleccionada}`);
-            }
-        });
-    }
+    // El formulario se envía automáticamente cuando se hace clic en "Agregar al carrito"
+    // Ya no necesitamos el event listener del botón porque es un submit button
 });

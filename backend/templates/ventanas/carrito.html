@@ -1,105 +1,206 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html><!DOCTYPE html>
 
-<html lang="es"><html lang="es">
+<html lang="es">
 
-<head><head>
+<head><html lang="es"><html lang="es">
 
-    <meta charset="UTF-8">    <meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-    <title>Carrito - Don Gato</title>    <title>Don Gato</title>
+    <title>Carrito - Don Gato</title><head><head>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/datos.css') }}">    <link rel="icon" href="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}">
+    <link rel="icon" href="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}">    <meta charset="UTF-8">    <meta charset="UTF-8">
 
-    <link rel="icon" href="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}"></head>
+</head>
 
-</head><body>
+<body>    <title>Carrito - Don Gato</title>    <title>Don Gato</title>
 
-<body><header>
+<header>
 
-<header>    <div class="izquierda">
+    <div class="izquierda">    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
 
-    <div class="izquierda">        <a href="index.html">
+        <a href="{{ url_for('index') }}">
 
-        <a href="{{ url_for('index') }}">            <img src="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}" alt="Logo">
+            <img src="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}" alt="Logo">    <link rel="stylesheet" href="{{ url_for('static', filename='css/datos.css') }}">    <link rel="icon" href="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}">
 
-            <img src="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}" alt="Logo">        </a>
+        </a>
 
-        </a>        <h1>DON GATO</h1>
-
-        <h1>DON GATO</h1>    </div>
+        <h1>DON GATO</h1>    <link rel="icon" href="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}"></head>
 
     </div>
 
+</head><body>
+
     <div class="derecha">
 
-    <div class="derecha">            <a href="cuenta.html" class="cuenta">
+        <!-- Mostrar nombre del usuario logueado --><body><header>
 
-        <!-- Mostrar nombre del usuario logueado -->            <img src="{{ url_for('static', filename='img/encabezado/perfil.png') }}" alt="Cuenta">
+        <div style="color: white; font-size: 24px; font-family: Arial, sans-serif; margin-right: 15px; display: flex; align-items: center;">
 
-        <div style="color: white; font-size: 24px; font-family: Arial, sans-serif; margin-right: 15px; display: flex; align-items: center;">        </a>
+            ¡Hola, {{ session.user_name }}! <header>    <div class="izquierda">
 
-            ¡Hola, {{ session.user_name }}!             <a href="contacto.html" class="contacto">
+        </div>
 
-        </div>            <img src="{{ url_for('static', filename='img/encabezado/mensaje.png') }}" alt="Contacto">
+        <a href="{{ url_for('cuenta') }}" class="cuenta">    <div class="izquierda">        <a href="index.html">
 
-        <a href="{{ url_for('cuenta') }}" class="cuenta">        </a>
+            <img src="{{ url_for('static', filename='img/encabezado/perfil.png') }}" alt="Cuenta">
 
-            <img src="{{ url_for('static', filename='img/encabezado/perfil.png') }}" alt="Cuenta">            <a href="carrito.html" class="carrito">
+        </a>        <a href="{{ url_for('index') }}">            <img src="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}" alt="Logo">
 
-        </a>            <img src="{{ url_for('static', filename='img/encabezado/carrito.png') }}" alt="Carrito">
+        <a href="{{ url_for('contacto') }}" class="contacto">
 
-        <a href="{{ url_for('contacto') }}" class="contacto">        </a>
+            <img src="{{ url_for('static', filename='img/encabezado/mensaje.png') }}" alt="Contacto">            <img src="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}" alt="Logo">        </a>
 
-            <img src="{{ url_for('static', filename='img/encabezado/mensaje.png') }}" alt="Contacto">    </div>
+        </a>
+
+        <a href="{{ url_for('carrito') }}" class="carrito">        </a>        <h1>DON GATO</h1>
+
+            <img src="{{ url_for('static', filename='img/encabezado/carrito.png') }}" alt="Carrito">
+
+        </a>        <h1>DON GATO</h1>    </div>
+
+    </div>
+
+</header>    </div>
+
+
+
+<main>    <div class="derecha">
+
+    <div class="cuenta">
+
+        <br>    <div class="derecha">            <a href="cuenta.html" class="cuenta">
+
+        <h1>Carrito</h1>
+
+                <!-- Mostrar nombre del usuario logueado -->            <img src="{{ url_for('static', filename='img/encabezado/perfil.png') }}" alt="Cuenta">
+
+        {% if carrito_items %}
+
+            <table style="width:100%; font-size:18px; margin-bottom:20px;">        <div style="color: white; font-size: 24px; font-family: Arial, sans-serif; margin-right: 15px; display: flex; align-items: center;">        </a>
+
+                <thead>
+
+                    <tr>            ¡Hola, {{ session.user_name }}!             <a href="contacto.html" class="contacto">
+
+                        <th>Producto</th>
+
+                        <th>Talla</th>        </div>            <img src="{{ url_for('static', filename='img/encabezado/mensaje.png') }}" alt="Contacto">
+
+                    </tr>
+
+                </thead>        <a href="{{ url_for('cuenta') }}" class="cuenta">        </a>
+
+                <tbody id="carrito-productos">
+
+                    {% for item in carrito_items %}            <img src="{{ url_for('static', filename='img/encabezado/perfil.png') }}" alt="Cuenta">            <a href="carrito.html" class="carrito">
+
+                        <tr>
+
+                            <td>{{ item.nombre }}</td>        </a>            <img src="{{ url_for('static', filename='img/encabezado/carrito.png') }}" alt="Carrito">
+
+                            <td>{{ item.talla }}</td>
+
+                        </tr>        <a href="{{ url_for('contacto') }}" class="contacto">        </a>
+
+                    {% endfor %}
+
+                </tbody>            <img src="{{ url_for('static', filename='img/encabezado/mensaje.png') }}" alt="Contacto">    </div>
+
+            </table>
 
         </a></header>
 
-        <a href="{{ url_for('carrito') }}" class="carrito">
+            <h2>Resumen</h2>
 
-            <img src="{{ url_for('static', filename='img/encabezado/carrito.png') }}" alt="Carrito"><main>
+            <div id="resumenFactura" style="font-size:18px; margin-bottom:20px;">        <a href="{{ url_for('carrito') }}" class="carrito">
 
-        </a>    <div class="cuenta">
+                <p>Total de productos: {{ carrito_items|length }}</p>
 
-    </div>        <br>
+            </div>            <img src="{{ url_for('static', filename='img/encabezado/carrito.png') }}" alt="Carrito"><main>
 
-</header>        <h1>Carrito</h1>
 
-        <table style="width:100%; font-size:18px; margin-bottom:20px;">
 
-<main>            <thead>
+            <form method="POST" action="{{ url_for('confirmar_pedido') }}">        </a>    <div class="cuenta">
 
-    <div class="cuenta">                <tr>
+                <button type="submit" style="font-size: 22px; margin-bottom: 30px; padding: 5px; width: 275px;" id="confirmarPedido">
 
-        <br>                    <th>Producto</th>
+                    Confirmar pedido    </div>        <br>
 
-        <h1>Mi Carrito</h1>                    <th>Cantidad</th>
+                </button>
 
-        <br>                    <th>Precio</th>
+            </form></header>        <h1>Carrito</h1>
 
-                            <th>Subtotal</th>
+        {% else %}
 
-        {% if carrito_items %}                </tr>
+            <table style="width:100%; font-size:18px; margin-bottom:20px;">        <table style="width:100%; font-size:18px; margin-bottom:20px;">
 
-            <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">            </thead>
+                <thead>
 
-                <h2>Productos en tu carrito:</h2>            <body id="carrito-productos">
+                    <tr><main>            <thead>
+
+                        <th>Producto</th>
+
+                        <th>Talla</th>    <div class="cuenta">                <tr>
+
+                    </tr>
+
+                </thead>        <br>                    <th>Producto</th>
+
+                <tbody id="carrito-productos">
+
+                    <tr>        <h1>Mi Carrito</h1>                    <th>Cantidad</th>
+
+                        <td colspan="2" style="text-align: center; padding: 20px; color: #666;">
+
+                            Tu carrito está vacío        <br>                    <th>Precio</th>
+
+                        </td>
+
+                    </tr>                            <th>Subtotal</th>
+
+                </tbody>
+
+            </table>        {% if carrito_items %}                </tr>
+
+
+
+            <h2>Resumen</h2>            <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">            </thead>
+
+            <div id="resumenFactura" style="font-size:18px; margin-bottom:20px;">
+
+                <p>Total de productos: 0</p>                <h2>Productos en tu carrito:</h2>            <body id="carrito-productos">
+
+            </div>
 
                 {% for item in carrito_items %}            </body>
 
-                    <div style="border-bottom: 1px solid #ddd; padding: 15px 0; display: flex; justify-content: space-between; align-items: center;">        </table>
+            <button style="font-size: 22px; margin-bottom: 30px; padding: 5px; width: 275px;" disabled>
 
-                        <div>
+                Confirmar pedido                    <div style="border-bottom: 1px solid #ddd; padding: 15px 0; display: flex; justify-content: space-between; align-items: center;">        </table>
 
-                            <strong style="font-size: 18px;">{{ item.nombre }}</strong>        <h2>Resumen</h2>
+            </button>
 
-                            <p style="margin: 5px 0; color: #666;">Talla: {{ item.talla }}</p>        <div id="resumenFactura" style="font-size:18px; margin-bottom:20px;">
+        {% endif %}                        <div>
 
-                        </div>        </div>
+    </div>
 
-                    </div>        <button style="font-size: 22px; margin-bottom: 30px; padding: 5px; width: 275px;" id="confirmarPedido">Confirmar pedido</button>
+</main>                            <strong style="font-size: 18px;">{{ item.nombre }}</strong>        <h2>Resumen</h2>
 
+
+
+<footer>                            <p style="margin: 5px 0; color: #666;">Talla: {{ item.talla }}</p>        <div id="resumenFactura" style="font-size:18px; margin-bottom:20px;">
+
+    &copy; 2025 Don Gato. Todos los derechos reservados.
+
+</footer>                        </div>        </div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>                    </div>        <button style="font-size: 22px; margin-bottom: 30px; padding: 5px; width: 275px;" id="confirmarPedido">Confirmar pedido</button>
+
+</html>
                 {% endfor %}    </div>
 
                 </main>

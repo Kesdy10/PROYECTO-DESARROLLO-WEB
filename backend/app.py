@@ -110,8 +110,13 @@ def login():
 @app.route('/login.html', methods=['GET', 'POST'])
 def login_page():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        # Validaciones básicas
+        if not email or not password:
+            flash('Email y contraseña son obligatorios', 'error')
+            return render_template('ventanas/login.html')
         
         usuario = Usuario.query.filter_by(email=email).first()
         
@@ -128,13 +133,24 @@ def login_page():
 @app.route('/crearCuenta.html', methods=['GET', 'POST'])
 def crear_cuenta():
     if request.method == 'POST':
-        nombres = request.form['nombres']
+        nombres = request.form.get('nombres')
         apellidos = request.form.get('apellidos', '')
-        email = request.form['email']
+        email = request.form.get('email')
         telefono = request.form.get('telefono', '')
         nacimiento = request.form.get('nacimiento')
         direccion = request.form.get('direccion', '')
-        password = request.form['password']
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        
+        # Validaciones básicas
+        if not nombres or not email or not password:
+            flash('Los campos Nombres, Email y Contraseña son obligatorios', 'error')
+            return render_template('ventanas/crearCuenta.html')
+            
+        # Validar confirmación de contraseña
+        if password != confirm_password:
+            flash('Las contraseñas no coinciden', 'error')
+            return render_template('ventanas/crearCuenta.html')
         
         # Verificar si el usuario ya existe
         if Usuario.query.filter_by(email=email).first():

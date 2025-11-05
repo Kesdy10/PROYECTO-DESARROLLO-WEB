@@ -115,7 +115,6 @@ def login_page():
         
         # Validaciones básicas
         if not email or not password:
-            flash('Email y contraseña son obligatorios', 'error')
             return render_template('ventanas/login.html')
         
         usuario = Usuario.query.filter_by(email=email).first()
@@ -123,10 +122,9 @@ def login_page():
         if usuario and usuario.check_password(password):
             session['user_id'] = usuario.id
             session['user_name'] = usuario.nombres + ' ' + (usuario.apellidos or '')
-            flash('¡Bienvenido!', 'success')
             return redirect(url_for('index'))
         else:
-            flash('Email o contraseña incorrectos', 'error')
+            pass
     
     return render_template('ventanas/login.html')
 
@@ -144,17 +142,14 @@ def crear_cuenta():
         
         # Validaciones básicas
         if not nombres or not email or not password:
-            flash('Los campos Nombres, Email y Contraseña son obligatorios', 'error')
             return render_template('ventanas/crearCuenta.html')
             
         # Validar confirmación de contraseña
         if password != confirm_password:
-            flash('Las contraseñas no coinciden', 'error')
             return render_template('ventanas/crearCuenta.html')
         
         # Verificar si el usuario ya existe
         if Usuario.query.filter_by(email=email).first():
-            flash('Este email ya está registrado', 'error')
             return render_template('ventanas/crearCuenta.html')
         
         # Crear nuevo usuario
@@ -176,11 +171,9 @@ def crear_cuenta():
         try:
             db.session.add(nuevo_usuario)
             db.session.commit()
-            flash('Cuenta creada exitosamente. ¡Ahora puedes iniciar sesión!', 'success')
             return redirect(url_for('login'))
         except Exception as e:
             db.session.rollback()
-            flash('Error al crear la cuenta. Inténtalo de nuevo.', 'error')
             return render_template('ventanas/crearCuenta.html')
     
     return render_template('ventanas/crearCuenta.html')
@@ -188,21 +181,18 @@ def crear_cuenta():
 @app.route('/logout')
 def logout():
     session.clear()
-    flash('Has cerrado sesión', 'info')
-    return redirect(url_for('login'))  # Cambiado
+    return redirect(url_for('login'))
 
 @app.route('/index.html')
 def index():
     if 'user_id' not in session:
-        flash('Debes iniciar sesión primero', 'error')
-        return redirect(url_for('login'))  # Cambiado
+        return redirect(url_for('login'))
     return render_template('ventanas/index.html')
 
 @app.route('/cuenta.html', methods=['GET', 'POST'])
 def cuenta():
     if 'user_id' not in session:
-        flash('Debes iniciar sesión primero', 'error')
-        return redirect(url_for('login'))  # Cambiado
+        return redirect(url_for('login'))
     
     usuario = Usuario.query.get(session['user_id'])
     
@@ -219,22 +209,18 @@ def cuenta():
         
         # Validaciones
         if not nombres or not email:
-            flash('Los campos Nombres y Correo son obligatorios', 'error')
             return render_template('ventanas/cuenta.html', usuario=usuario)
         
         # Verificar si el email ya existe (excepto el del usuario actual)
         existing_user = Usuario.query.filter(Usuario.email == email, Usuario.id != usuario.id).first()
         if existing_user:
-            flash('Este correo ya está registrado por otro usuario', 'error')
             return render_template('ventanas/cuenta.html', usuario=usuario)
         
         # Validar contraseñas si se proporcionaron
         if new_password:
             if new_password != confirm_password:
-                flash('Las contraseñas no coinciden', 'error')
                 return render_template('ventanas/cuenta.html', usuario=usuario)
             if len(new_password) < 6:
-                flash('La contraseña debe tener al menos 6 caracteres', 'error')
                 return render_template('ventanas/cuenta.html', usuario=usuario)
         
         # Actualizar datos del usuario
@@ -250,7 +236,6 @@ def cuenta():
                 from datetime import datetime
                 usuario.nacimiento = datetime.strptime(nacimiento, '%Y-%m-%d').date()
             except ValueError:
-                flash('Formato de fecha inválido', 'error')
                 return render_template('ventanas/cuenta.html', usuario=usuario)
         
         # Actualizar contraseña si se proporcionó
@@ -260,18 +245,15 @@ def cuenta():
         try:
             db.session.commit()
             session['user_name'] = nombres  # Actualizar nombre en sesión
-            flash('Datos actualizados exitosamente', 'success')
         except Exception as e:
             db.session.rollback()
-            flash('Error al actualizar los datos', 'error')
     
     return render_template('ventanas/cuenta.html', usuario=usuario)
 
 @app.route('/contacto.html', methods=['GET', 'POST'])
 def contacto():
     if 'user_id' not in session:
-        flash('Debes iniciar sesión primero', 'error')
-        return redirect(url_for('login'))  # Cambiado
+        return redirect(url_for('login'))
     
     if request.method == 'POST':
         nombre = request.form.get('nombre')
@@ -280,7 +262,6 @@ def contacto():
         
         # Validaciones
         if not nombre or not correo or not mensaje_texto:
-            flash('Todos los campos son obligatorios', 'error')
             return render_template('ventanas/contacto.html')
         
         # Crear nuevo mensaje
@@ -293,18 +274,15 @@ def contacto():
         try:
             db.session.add(nuevo_mensaje)
             db.session.commit()
-            flash('¡Mensaje enviado exitosamente! Te contactaremos pronto.', 'success')
             return redirect(url_for('contacto'))
         except Exception as e:
             db.session.rollback()
-            flash('Error al enviar el mensaje. Inténtalo de nuevo.', 'error')
     
     return render_template('ventanas/contacto.html')
 
 @app.route('/carrito.html')
 def carrito():
     if 'user_id' not in session:
-        flash('Debes iniciar sesión primero', 'error')
         return redirect(url_for('login'))
     
     # Obtener carrito de la sesión
@@ -322,7 +300,6 @@ def agregar_carrito():
     precio = request.form.get('precio', '0')
     
     if not nombre_producto or not talla:
-        flash('Debes seleccionar una talla', 'error')
         return redirect(request.referrer)
     
     # Inicializar carrito si no existe
@@ -339,7 +316,6 @@ def agregar_carrito():
     session['carrito'].append(item)
     session.modified = True
     
-    flash(f'Producto agregado al carrito: {nombre_producto} - Talla {talla}', 'success')
     return redirect(request.referrer)
 
 @app.route('/confirmar_pedido', methods=['POST'])
@@ -352,7 +328,6 @@ def confirmar_pedido():
     carrito_items = session.get('carrito', [])
     
     if not carrito_items:
-        flash('Tu carrito está vacío', 'error')
         return redirect(url_for('carrito'))
     
     direccion = usuario.direccion if usuario.direccion else "dirección no especificada"
@@ -361,7 +336,6 @@ def confirmar_pedido():
     session['carrito'] = []
     session.modified = True
     
-    flash(f'¡Pedido confirmado! Se enviará a: {direccion}', 'success')
     return redirect(url_for('carrito'))
 
 # MARCAS

@@ -9,20 +9,20 @@
 <body>
 <header>
     <div class="izquierda">
-            <a href="index.html">
+            <a href="{{ url_for('index') }}">
             <img src="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}" alt="Logo">
         </a>
         <h1>DON GATO</h1>
     </div>
 
     <div class="derecha">
-            <a href="cuenta.html" class="cuenta">
+            <a href="{{ url_for('cuenta') }}" class="cuenta">
             <img src="/static/img/encabezado/perfil.png" alt="Cuenta">
         </a>
-            <a href="contacto.html" class="contacto">
+            <a href="{{ url_for('contacto') }}" class="contacto">
             <img src="/static/img/encabezado/mensaje.png" alt="Contacto">
         </a>
-            <a href="carrito.html" class="carrito">
+            <a href="{{ url_for('carrito') }}" class="carrito">
             <img src="/static/img/encabezado/carrito.png" alt="Carrito">
         </a>
     </div>

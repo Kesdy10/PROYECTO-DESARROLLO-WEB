@@ -44,22 +44,27 @@
         <div class="datos-producto">
             <div class="titulo-producto">Reebok Phase Court</div>
             <div class="precio-producto">Q650</div>
-            <div class="tallas-producto">
-                <label>Tallas disponibles:</label>
-                <div class="tallas-lista" id="tallas-lista">
-                    <div class="talla-item" data-talla="5.5">5.5</div>
-                    <div class="talla-item" data-talla="6">6</div>
-                    <div class="talla-item" data-talla="6.5">6.5</div>
-                    <div class="talla-item" data-talla="7">7</div>
-                    <div class="talla-item" data-talla="7.5">7.5</div>
-                    <div class="talla-item" data-talla="8">8</div>
-                    <div class="talla-item" data-talla="8.5">8.5</div>
-                    <div class="talla-item" data-talla="9">9</div>
-                    <div class="talla-item" data-talla="9.5">9.5</div>
-                    <div class="talla-item" data-talla="10">10</div>
-                    <button class="agregar-carrito-btn" id="agregar-carrito" disabled>Agregar al carrito</button>
+            <form method="POST" action="{{ url_for('agregar_carrito') }}" id="form-carrito">
+                <input type="hidden" name="nombre_producto" value="Reebok Phase Court">
+                <input type="hidden" name="precio" value="650">
+                <input type="hidden" name="talla" id="talla-seleccionada">
+                <div class="tallas-producto">
+                    <label>Tallas disponibles:</label>
+                    <div class="tallas-lista" id="tallas-lista">
+                        <div class="talla-item" data-talla="5.5">5.5</div>
+                        <div class="talla-item" data-talla="6">6</div>
+                        <div class="talla-item" data-talla="6.5">6.5</div>
+                        <div class="talla-item" data-talla="7">7</div>
+                        <div class="talla-item" data-talla="7.5">7.5</div>
+                        <div class="talla-item" data-talla="8">8</div>
+                        <div class="talla-item" data-talla="8.5">8.5</div>
+                        <div class="talla-item" data-talla="9">9</div>
+                        <div class="talla-item" data-talla="9.5">9.5</div>
+                        <div class="talla-item" data-talla="10">10</div>
+                        <button type="submit" class="agregar-carrito-btn" id="agregar-carrito" disabled>Agregar al carrito</button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </main>

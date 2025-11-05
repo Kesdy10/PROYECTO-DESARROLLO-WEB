@@ -60,15 +60,12 @@ class Mensaje(db.Model):
     def __repr__(self):
         return f'<Mensaje {self.nombre}>'
 
-# Inicializar la base de datos con manejo de errores
+# Inicializar la base de datos
 try:
     with app.app_context():
-        # Forzar recreación de tablas para corregir estructura
-        db.drop_all()  # Eliminar tablas existentes
-        db.create_all()  # Crear tablas con estructura correcta
-        print("✅ Tablas recreadas correctamente")
+        db.create_all()
 except Exception as e:
-    print(f"⚠️ Error al recrear tablas: {e}")
+    print(f"Error al inicializar BD: {e}")
 
 # VENTANAS
 @app.route('/health')
@@ -93,76 +90,6 @@ def health_check():
         return {
             'status': 'unhealthy', 
             'database': 'disconnected',
-            'error': str(e)
-        }, 500
-
-@app.route('/admin/usuarios')
-def ver_usuarios():
-    """Ver todos los usuarios registrados - Solo para debugging"""
-    try:
-        usuarios = Usuario.query.all()
-        usuarios_data = []
-        for usuario in usuarios:
-            usuarios_data.append({
-                'id': usuario.id,
-                'nombres': usuario.nombres,
-                'apellidos': usuario.apellidos,
-                'email': usuario.email,
-                'telefono': usuario.telefono,
-                'direccion': usuario.direccion,
-                'nacimiento': usuario.nacimiento.strftime('%Y-%m-%d') if usuario.nacimiento else None,
-                'fecha_registro': usuario.fecha_registro.strftime('%Y-%m-%d %H:%M:%S') if hasattr(usuario, 'fecha_registro') and usuario.fecha_registro else 'No disponible'
-            })
-        
-        return {
-            'total_usuarios': len(usuarios),
-            'usuarios': usuarios_data
-        }, 200
-    except Exception as e:
-        return {
-            'error': str(e)
-        }, 500
-
-@app.route('/admin/mensajes')
-def ver_mensajes():
-    """Ver todos los mensajes de contacto - Solo para debugging"""
-    try:
-        mensajes = Mensaje.query.all()
-        mensajes_data = []
-        for mensaje in mensajes:
-            mensajes_data.append({
-                'id': mensaje.id,
-                'nombre': mensaje.nombre,
-                'correo': mensaje.correo,
-                'mensaje': mensaje.mensaje,
-                'fecha_envio': mensaje.fecha_envio.strftime('%Y-%m-%d %H:%M:%S')
-            })
-        
-        return {
-            'total_mensajes': len(mensajes),
-            'mensajes': mensajes_data
-        }, 200
-    except Exception as e:
-        return {
-            'error': str(e)
-        }, 500
-
-@app.route('/admin/recrear-tablas')
-def recrear_tablas():
-    """Recrear todas las tablas - Solo para fixing de estructura"""
-    try:
-        with app.app_context():
-            db.drop_all()  # Eliminar todas las tablas
-            db.create_all()  # Crear todas las tablas con estructura actual
-            
-        return {
-            'status': 'success',
-            'message': 'Tablas recreadas exitosamente',
-            'tablas_creadas': ['usuario', 'mensaje']
-        }, 200
-    except Exception as e:
-        return {
-            'status': 'error',
             'error': str(e)
         }, 500
 
@@ -206,12 +133,6 @@ def login_page():
 @app.route('/crearCuenta.html', methods=['GET', 'POST'])
 def crear_cuenta():
     if request.method == 'POST':
-        # Debug: imprimir todos los datos recibidos
-        print("=== DATOS RECIBIDOS ===")
-        for key, value in request.form.items():
-            print(f"{key}: '{value}'")
-        print("========================")
-        
         nombres = request.form.get('nombres')
         apellidos = request.form.get('apellidos', '')
         email = request.form.get('email')
@@ -221,28 +142,22 @@ def crear_cuenta():
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
         
-        print(f"Nombres: '{nombres}', Email: '{email}', Password: '{password}'")
-        
         # Validaciones básicas
         if not nombres or not email or not password:
-            print("❌ Validación fallida: campos obligatorios vacíos")
             flash('Los campos Nombres, Email y Contraseña son obligatorios', 'error')
             return render_template('ventanas/crearCuenta.html')
             
         # Validar confirmación de contraseña
         if password != confirm_password:
-            print("❌ Validación fallida: contraseñas no coinciden")
             flash('Las contraseñas no coinciden', 'error')
             return render_template('ventanas/crearCuenta.html')
         
         # Verificar si el usuario ya existe
         if Usuario.query.filter_by(email=email).first():
-            print("❌ Usuario ya existe")
             flash('Este email ya está registrado', 'error')
             return render_template('ventanas/crearCuenta.html')
         
         # Crear nuevo usuario
-        print("✅ Creando nuevo usuario...")
         nuevo_usuario = Usuario(
             nombres=nombres,
             apellidos=apellidos,
@@ -253,23 +168,18 @@ def crear_cuenta():
         
         # Manejar fecha de nacimiento
         if nacimiento:
-            print(f"📅 Procesando fecha de nacimiento: {nacimiento}")
             from datetime import datetime
             nuevo_usuario.nacimiento = datetime.strptime(nacimiento, '%Y-%m-%d').date()
         
-        print("🔐 Configurando contraseña...")
         nuevo_usuario.set_password(password)
         
         try:
-            print("💾 Guardando en base de datos...")
             db.session.add(nuevo_usuario)
             db.session.commit()
-            print("✅ Usuario creado exitosamente!")
             flash('Cuenta creada exitosamente. ¡Ahora puedes iniciar sesión!', 'success')
             return redirect(url_for('login'))
         except Exception as e:
             db.session.rollback()
-            print(f"❌ Error al crear usuario: {e}")
             flash('Error al crear la cuenta. Inténtalo de nuevo.', 'error')
             return render_template('ventanas/crearCuenta.html')
     
@@ -575,18 +485,4 @@ def reebokquestion():
 if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))
-    
-    print(f"🚀 Iniciando aplicación en puerto {port}")
-    print(f"🔧 DATABASE_URL disponible: {'Sí' if os.environ.get('DATABASE_URL') else 'No'}")
-    
-    # Intentar inicializar BD si no se hizo antes
-    try:
-        with app.app_context():
-            db.create_all()
-            print("✅ Verificación final de BD completada")
-    except Exception as e:
-        print(f"⚠️ Error en verificación final de BD: {e}")
-    
-    # En desarrollo, usar el servidor de desarrollo de Flask
-    # En producción, Railway usará este mismo comando
     app.run(host='0.0.0.0', port=port, debug=False)

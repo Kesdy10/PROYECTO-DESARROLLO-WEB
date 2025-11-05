@@ -386,8 +386,30 @@ def contacto():
 @app.route('/carrito.html')
 def carrito():
     # Obtener carrito de la sesión (funciona con o sin login)
-    carrito_items = session.get('carrito', [])
-    return render_template('ventanas/carrito.html', carrito_items=carrito_items)
+    items = session.get('carrito', [])
+
+    # Agrupar por (nombre, talla) para acumular cantidades
+    grupos = {}
+    for it in items:
+        nombre = it.get('nombre')
+        talla = it.get('talla')
+        try:
+            precio = int(str(it.get('precio', '0')).replace('Q', '').replace(',', '').strip())
+        except Exception:
+            precio = 0
+        clave = f"{nombre}|{talla}"
+        if clave in grupos:
+            grupos[clave]['cantidad'] += 1
+        else:
+            grupos[clave] = {
+                'nombre': nombre,
+                'talla': talla,
+                'precio': precio,
+                'cantidad': 1,
+            }
+
+    carrito_agregado = list(grupos.values())
+    return render_template('ventanas/carrito.html', carrito_items=carrito_agregado)
 
 @app.route('/agregar_carrito', methods=['POST'])
 def agregar_carrito():

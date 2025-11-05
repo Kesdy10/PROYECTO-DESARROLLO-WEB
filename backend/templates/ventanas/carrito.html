@@ -46,9 +46,9 @@
                     {% for item in carrito_items %}
                     <tr style="border-bottom: 1px solid #ddd;">
                         <td style="padding: 12px; text-align: left;">{{ item.nombre }} - Talla {{ item.talla }}</td>
-                        <td style="padding: 12px; text-align: center;">1</td>
+                        <td style="padding: 12px; text-align: center;">{{ item.cantidad }}</td>
                         <td style="padding: 12px; text-align: center;">Q{{ item.precio }}</td>
-                        <td style="padding: 12px; text-align: center;">Q{{ item.precio }}</td>
+                        <td style="padding: 12px; text-align: center;">Q{{ (item.precio|int * item.cantidad) }}</td>
                     </tr>
                     {% endfor %}
                 {% else %}
@@ -62,8 +62,14 @@
         <h2>Resumen</h2>
         <div id="resumenFactura" style="font-size:18px; margin-bottom:20px;">
             {% if carrito_items %}
-                <p><strong>Total de productos:</strong> {{ carrito_items|length }}</p>
-                <p><strong>Total a pagar:</strong> Q{% set total = namespace(value=0) %}{% for item in carrito_items %}{% set total.value = total.value + item.precio|int %}{% endfor %}{{ total.value }}</p>
+                {% set total_cant = namespace(value=0) %}
+                {% set total_pagar = namespace(value=0) %}
+                {% for item in carrito_items %}
+                    {% set total_cant.value = total_cant.value + item.cantidad %}
+                    {% set total_pagar.value = total_pagar.value + (item.precio|int * item.cantidad) %}
+                {% endfor %}
+                <p><strong>Total de productos:</strong> {{ total_cant.value }}</p>
+                <p><strong>Total a pagar:</strong> Q{{ total_pagar.value }}</p>
             {% else %}
                 <p>No hay productos en el carrito</p>
             {% endif %}

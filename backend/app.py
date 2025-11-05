@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
@@ -229,6 +229,44 @@ def login_page():
         return render_template('ventanas/login.html')
     
     return render_template('ventanas/login.html')
+
+@app.route('/recuperar-password.html', methods=['GET', 'POST'])
+def recuperar_password():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        nueva_password = request.form.get('nueva_password')
+        confirmar_password = request.form.get('confirmar_password')
+        
+        # Validaciones básicas
+        if not email or not nueva_password or not confirmar_password:
+            flash('Todos los campos son requeridos', 'error')
+            return render_template('ventanas/recuperarPassword.html')
+        
+        # Validar que las contraseñas coincidan
+        if nueva_password != confirmar_password:
+            flash('Las contraseñas no coinciden', 'error')
+            return render_template('ventanas/recuperarPassword.html')
+        
+        # Validar mínimo 8 caracteres
+        if len(nueva_password) < 8:
+            flash('La contraseña debe tener mínimo 8 caracteres', 'error')
+            return render_template('ventanas/recuperarPassword.html')
+        
+        # Buscar usuario por email
+        usuario = Usuario.query.filter_by(email=email).first()
+        
+        if not usuario:
+            flash('No existe una cuenta con ese email', 'error')
+            return render_template('ventanas/recuperarPassword.html')
+        
+        # Actualizar contraseña en la base de datos
+        usuario.set_password(nueva_password)
+        db.session.commit()
+        
+        flash('Contraseña actualizada exitosamente. Ya puedes iniciar sesión.', 'success')
+        return redirect(url_for('login_page'))
+    
+    return render_template('ventanas/recuperarPassword.html')
 
 @app.route('/crearCuenta.html', methods=['GET', 'POST'])
 def crear_cuenta():

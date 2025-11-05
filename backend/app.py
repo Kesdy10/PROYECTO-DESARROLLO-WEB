@@ -191,6 +191,7 @@ def index():
 
 @app.route('/cuenta.html', methods=['GET', 'POST'])
 def cuenta():
+    # Si no hay usuario logueado, redirigir a login solo para cuenta
     if 'user_id' not in session:
         return redirect(url_for('login'))
     

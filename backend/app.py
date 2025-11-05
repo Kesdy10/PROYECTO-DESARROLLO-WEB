@@ -288,9 +288,6 @@ def carrito():
 
 @app.route('/agregar_carrito', methods=['POST'])
 def agregar_carrito():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    
     # Obtener datos del formulario
     nombre_producto = request.form.get('nombre_producto')
     talla = request.form.get('talla')
@@ -317,17 +314,10 @@ def agregar_carrito():
 
 @app.route('/confirmar_pedido', methods=['POST'])
 def confirmar_pedido():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    
-    # Obtener usuario actual
-    usuario = Usuario.query.get(session['user_id'])
     carrito_items = session.get('carrito', [])
     
     if not carrito_items:
         return redirect(url_for('carrito'))
-    
-    direccion = usuario.direccion if usuario.direccion else "dirección no especificada"
     
     # Limpiar carrito
     session['carrito'] = []

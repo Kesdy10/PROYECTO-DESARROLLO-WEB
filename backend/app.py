@@ -157,11 +157,16 @@ def crear_cuenta():
         
         nuevo_usuario.set_password(password)
         
-        db.session.add(nuevo_usuario)
-        db.session.commit()
-        
-        flash('Cuenta creada exitosamente. ¡Ahora puedes iniciar sesión!', 'success')
-        return redirect(url_for('login_page'))
+        try:
+            db.session.add(nuevo_usuario)
+            db.session.commit()
+            flash('Cuenta creada exitosamente. ¡Ahora puedes iniciar sesión!', 'success')
+            return redirect(url_for('login'))
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error al crear usuario: {e}")  # Para debugging
+            flash('Error al crear la cuenta. Inténtalo de nuevo.', 'error')
+            return render_template('ventanas/crearCuenta.html')
     
     return render_template('ventanas/crearCuenta.html')
 
@@ -169,20 +174,20 @@ def crear_cuenta():
 def logout():
     session.clear()
     flash('Has cerrado sesión', 'info')
-    return redirect(url_for('login_page'))
+    return redirect(url_for('login'))  # Cambiado
 
 @app.route('/index.html')
 def index():
     if 'user_id' not in session:
         flash('Debes iniciar sesión primero', 'error')
-        return redirect(url_for('login_page'))
+        return redirect(url_for('login'))  # Cambiado
     return render_template('ventanas/index.html')
 
 @app.route('/cuenta.html', methods=['GET', 'POST'])
 def cuenta():
     if 'user_id' not in session:
         flash('Debes iniciar sesión primero', 'error')
-        return redirect(url_for('login_page'))
+        return redirect(url_for('login'))  # Cambiado
     
     usuario = Usuario.query.get(session['user_id'])
     
@@ -251,7 +256,7 @@ def cuenta():
 def contacto():
     if 'user_id' not in session:
         flash('Debes iniciar sesión primero', 'error')
-        return redirect(url_for('login_page'))
+        return redirect(url_for('login'))  # Cambiado
     
     if request.method == 'POST':
         nombre = request.form.get('nombre')
@@ -285,7 +290,7 @@ def contacto():
 def carrito():
     if 'user_id' not in session:
         flash('Debes iniciar sesión primero', 'error')
-        return redirect(url_for('login_page'))
+        return redirect(url_for('login'))  # Cambiado
     return render_template('ventanas/carrito.html')
 
 # MARCAS

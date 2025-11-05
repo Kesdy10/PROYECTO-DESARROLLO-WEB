@@ -60,10 +60,87 @@ class Mensaje(db.Model):
     def __repr__(self):
         return f'<Mensaje {self.nombre}>'
 
+# Modelo de Producto
+class Producto(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(200), nullable=False)
+    marca = db.Column(db.String(50), nullable=False)
+    precio = db.Column(db.Integer, nullable=False)
+    tallas_disponibles = db.Column(db.String(200), nullable=False)  # "6,7,8,9,10,11,12"
+    imagen_ruta = db.Column(db.String(300), nullable=True)
+    pagina_html = db.Column(db.String(100), nullable=True)  # nikegato.html
+    
+    def __repr__(self):
+        return f'<Producto {self.nombre}>'
+    
+    def get_tallas(self):
+        """Retorna lista de tallas disponibles"""
+        return [int(t) for t in self.tallas_disponibles.split(',')]
+
 # Inicializar la base de datos
 try:
     with app.app_context():
         db.create_all()
+        
+        # Insertar productos Nike si no existen
+        if Producto.query.count() == 0:
+            productos_nike = [
+                Producto(
+                    nombre='Nike Gato SB',
+                    marca='Nike',
+                    precio=1000,
+                    tallas_disponibles='6,7,8,9,10,11,12',
+                    imagen_ruta='/static/img/nike/Nike Gato SB',
+                    pagina_html='nikegato.html'
+                ),
+                Producto(
+                    nombre='Nike Air Jordan 1 Mid',
+                    marca='Nike',
+                    precio=1400,
+                    tallas_disponibles='6,7,8,9,10,11,12',
+                    imagen_ruta='/static/img/nike/Air Jordan 1 Mid',
+                    pagina_html='nikeairjordan1mid.html'
+                ),
+                Producto(
+                    nombre='Nike Air Max Nuaxis',
+                    marca='Nike',
+                    precio=1200,
+                    tallas_disponibles='6,7,8,9,10,11,12',
+                    imagen_ruta='/static/img/nike/Nike Air Max Nuaxis',
+                    pagina_html='nikeairmaxnuaxis.html'
+                ),
+                Producto(
+                    nombre='Nike P-6000',
+                    marca='Nike',
+                    precio=1100,
+                    tallas_disponibles='6,7,8,9,10,11,12',
+                    imagen_ruta='/static/img/nike/Nike P-6000',
+                    pagina_html='nikep6000.html'
+                ),
+                Producto(
+                    nombre='Nike Pegasus Plus',
+                    marca='Nike',
+                    precio=1300,
+                    tallas_disponibles='6,7,8,9,10,11,12',
+                    imagen_ruta='/static/img/nike/Nike Pegasus Plus',
+                    pagina_html='nikepegasusplus.html'
+                ),
+                Producto(
+                    nombre='Nike Premier III',
+                    marca='Nike',
+                    precio=950,
+                    tallas_disponibles='6,7,8,9,10,11,12',
+                    imagen_ruta='/static/img/nike/Nike Premier III',
+                    pagina_html='nikepremieriii.html'
+                )
+            ]
+            
+            db.session.add_all(productos_nike)
+            db.session.commit()
+            print("✅ 6 productos Nike insertados en la BD")
+        else:
+            print(f"✅ BD ya tiene {Producto.query.count()} productos")
+            
 except Exception as e:
     print(f"Error al inicializar BD: {e}")
 
@@ -354,27 +431,33 @@ def reebok():
 # PRODUCTOS 
 @app.route('/nikegato.html')
 def nikegato():
-    return render_template('productosNike/nikegato.html')
+    producto = Producto.query.filter_by(pagina_html='nikegato.html').first()
+    return render_template('productosNike/nikegato.html', producto=producto)
 
 @app.route('/nikeairjordan1mid.html')
 def nikeairjordan1mid():
-    return render_template('productosNike/nikeairjordan1mid.html')
+    producto = Producto.query.filter_by(pagina_html='nikeairjordan1mid.html').first()
+    return render_template('productosNike/nikeairjordan1mid.html', producto=producto)
 
 @app.route('/nikeairmaxnuaxis.html')
 def nikeairmaxnuaxis():
-    return render_template('productosNike/nikeairmaxnuaxis.html')
+    producto = Producto.query.filter_by(pagina_html='nikeairmaxnuaxis.html').first()
+    return render_template('productosNike/nikeairmaxnuaxis.html', producto=producto)
 
 @app.route('/nikep6000.html')
 def nikep6000():
-    return render_template('productosNike/nikep6000.html')
+    producto = Producto.query.filter_by(pagina_html='nikep6000.html').first()
+    return render_template('productosNike/nikep6000.html', producto=producto)
 
 @app.route('/nikepegasusplus.html')
 def nikepegasusplus():
-    return render_template('productosNike/nikepegasusplus.html')
+    producto = Producto.query.filter_by(pagina_html='nikepegasusplus.html').first()
+    return render_template('productosNike/nikepegasusplus.html', producto=producto)
 
 @app.route('/nikepremieriii.html')
 def nikepremieriii():
-    return render_template('productosNike/nikepremieriii.html')
+    producto = Producto.query.filter_by(pagina_html='nikepremieriii.html').first()
+    return render_template('productosNike/nikepremieriii.html', producto=producto)
 
 @app.route('/adidassamba.html')
 def adidassamba():

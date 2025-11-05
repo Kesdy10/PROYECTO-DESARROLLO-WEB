@@ -41,6 +41,7 @@ class Usuario(db.Model):
     nacimiento = db.Column(db.Date, nullable=True)
     direccion = db.Column(db.String(200), nullable=True)
     password_hash = db.Column(db.String(255), nullable=False)
+    fecha_registro = db.Column(db.DateTime, default=datetime.utcnow)
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -184,6 +185,12 @@ def login_page():
 @app.route('/crearCuenta.html', methods=['GET', 'POST'])
 def crear_cuenta():
     if request.method == 'POST':
+        # Debug: imprimir todos los datos recibidos
+        print("=== DATOS RECIBIDOS ===")
+        for key, value in request.form.items():
+            print(f"{key}: '{value}'")
+        print("========================")
+        
         nombres = request.form.get('nombres')
         apellidos = request.form.get('apellidos', '')
         email = request.form.get('email')
@@ -193,22 +200,28 @@ def crear_cuenta():
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
         
+        print(f"Nombres: '{nombres}', Email: '{email}', Password: '{password}'")
+        
         # Validaciones básicas
         if not nombres or not email or not password:
+            print("❌ Validación fallida: campos obligatorios vacíos")
             flash('Los campos Nombres, Email y Contraseña son obligatorios', 'error')
             return render_template('ventanas/crearCuenta.html')
             
         # Validar confirmación de contraseña
         if password != confirm_password:
+            print("❌ Validación fallida: contraseñas no coinciden")
             flash('Las contraseñas no coinciden', 'error')
             return render_template('ventanas/crearCuenta.html')
         
         # Verificar si el usuario ya existe
         if Usuario.query.filter_by(email=email).first():
+            print("❌ Usuario ya existe")
             flash('Este email ya está registrado', 'error')
             return render_template('ventanas/crearCuenta.html')
         
         # Crear nuevo usuario
+        print("✅ Creando nuevo usuario...")
         nuevo_usuario = Usuario(
             nombres=nombres,
             apellidos=apellidos,
@@ -219,19 +232,23 @@ def crear_cuenta():
         
         # Manejar fecha de nacimiento
         if nacimiento:
+            print(f"📅 Procesando fecha de nacimiento: {nacimiento}")
             from datetime import datetime
             nuevo_usuario.nacimiento = datetime.strptime(nacimiento, '%Y-%m-%d').date()
         
+        print("🔐 Configurando contraseña...")
         nuevo_usuario.set_password(password)
         
         try:
+            print("💾 Guardando en base de datos...")
             db.session.add(nuevo_usuario)
             db.session.commit()
+            print("✅ Usuario creado exitosamente!")
             flash('Cuenta creada exitosamente. ¡Ahora puedes iniciar sesión!', 'success')
             return redirect(url_for('login'))
         except Exception as e:
             db.session.rollback()
-            print(f"Error al crear usuario: {e}")  # Para debugging
+            print(f"❌ Error al crear usuario: {e}")
             flash('Error al crear la cuenta. Inténtalo de nuevo.', 'error')
             return render_template('ventanas/crearCuenta.html')
     

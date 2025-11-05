@@ -12,7 +12,7 @@
 <header>
     <div class="izquierda">
         <a href="index.html">
-            <img src="/static/img/encabezado/logo.jpeg" alt="Logo">
+            <img src="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}" alt="Logo">
         </a>
         <h1>DON GATO</h1>
     </div>
@@ -44,22 +44,28 @@
         <div class="datos-producto">
             <div class="titulo-producto">Nike Air Jordan 1 Mid</div>
             <div class="precio-producto">Q1400</div>
-            <div class="tallas-producto">
-                <label>Tallas disponibles:</label>
-                <div class="tallas-lista" id="tallas-lista">
-                    <div class="talla-item" data-talla="5.5">5.5</div>
-                    <div class="talla-item" data-talla="6">6</div>
-                    <div class="talla-item" data-talla="6.5">6.5</div>
-                    <div class="talla-item" data-talla="7">7</div>
-                    <div class="talla-item" data-talla="7.5">7.5</div>
-                    <div class="talla-item" data-talla="8">8</div>
-                    <div class="talla-item" data-talla="8.5">8.5</div>
-                    <div class="talla-item" data-talla="9">9</div>
-                    <div class="talla-item" data-talla="9.5">9.5</div>
-                    <div class="talla-item" data-talla="10">10</div>
-                    <button class="agregar-carrito-btn" id="agregar-carrito" disabled>Agregar al carrito</button>
+            
+            <form method="POST" action="{{ url_for('agregar_carrito') }}" id="form-carrito">
+                <input type="hidden" name="nombre_producto" value="Nike Air Jordan 1 Mid">
+                <input type="hidden" name="talla" id="talla-seleccionada">
+                
+                <div class="tallas-producto">
+                    <label>Tallas disponibles:</label>
+                    <div class="tallas-lista" id="tallas-lista">
+                        <div class="talla-item" data-talla="5.5">5.5</div>
+                        <div class="talla-item" data-talla="6">6</div>
+                        <div class="talla-item" data-talla="6.5">6.5</div>
+                        <div class="talla-item" data-talla="7">7</div>
+                        <div class="talla-item" data-talla="7.5">7.5</div>
+                        <div class="talla-item" data-talla="8">8</div>
+                        <div class="talla-item" data-talla="8.5">8.5</div>
+                        <div class="talla-item" data-talla="9">9</div>
+                        <div class="talla-item" data-talla="9.5">9.5</div>
+                        <div class="talla-item" data-talla="10">10</div>
+                        <button type="submit" class="agregar-carrito-btn" id="agregar-carrito" disabled>Agregar al carrito</button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </main>

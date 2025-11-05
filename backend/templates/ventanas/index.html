@@ -22,13 +22,13 @@
                 ¡Hola, {{ session.user_name }}! 
             </div>
             <a href="{{ url_for('cuenta') }}" class="cuenta">
-                <img src="{{ url_for('static', filename='img/encabezado/perfil.png') }}" alt="Cuenta">
+                <img src="/static/img/encabezado/perfil.png" alt="Cuenta">
             </a>
             <a href="{{ url_for('contacto') }}" class="contacto">
-                <img src="{{ url_for('static', filename='img/encabezado/mensaje.png') }}" alt="Contacto">
+                <img src="/static/img/encabezado/mensaje.png" alt="Contacto">
             </a>
             <a href="{{ url_for('carrito') }}" class="carrito">
-                <img src="{{ url_for('static', filename='img/encabezado/carrito.png') }}" alt="Carrito">
+                <img src="/static/img/encabezado/carrito.png" alt="Carrito">
             </a>
         </div>
     </header>

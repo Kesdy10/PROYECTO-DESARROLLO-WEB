@@ -2,16 +2,32 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+from sqlalchemy import inspect
 import os
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
 # Configuración de la base de datos
-app.config['SECRET_KEY'] = 'tu_clave_secreta_aqui'  # Cámbiala por una clave segura
+app.config['SECRET_KEY'] = 'tu_clave_secreta_muy_segura_para_railway_2024'  
 
-# Usar PostgreSQL de Railway
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://default:default@localhost/default')
+# Configurar base de datos PostgreSQL para Railway
+database_url = os.environ.get('DATABASE_URL')
+if database_url:
+    # Arreglar el protocolo si es necesario (Railway a veces usa postgres:// en lugar de postgresql://)
+    if database_url.startswith('postgres://'):
+        database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+    print(f"✅ Conectando a PostgreSQL: {database_url[:30]}...")
+else:
+    print("❌ No se encontró DATABASE_URL")
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://default:default@localhost/default'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_timeout': 20,
+    'pool_recycle': 300,
+    'pool_pre_ping': True
+}
 
 db = SQLAlchemy(app)
 
@@ -43,11 +59,46 @@ class Mensaje(db.Model):
     def __repr__(self):
         return f'<Mensaje {self.nombre}>'
 
-# Inicializar la base de datos
-with app.app_context():
-    db.create_all()
+# Inicializar la base de datos con manejo de errores
+def init_database():
+    try:
+        with app.app_context():
+            db.create_all()
+            print("✅ Base de datos inicializada correctamente")
+            return True
+    except Exception as e:
+        print(f"❌ Error al inicializar la base de datos: {e}")
+        return False
+
+# Intentar inicializar la base de datos
+init_database()
 
 # VENTANAS
+@app.route('/health')
+def health_check():
+    """Endpoint de verificación de salud para Railway"""
+    try:
+        # Verificar conexión a la base de datos
+        with app.app_context():
+            result = db.session.execute('SELECT 1').scalar()
+            
+        # Verificar que las tablas existen
+        inspector = inspect(db.engine)
+        tables = inspector.get_table_names()
+        
+        return {
+            'status': 'healthy', 
+            'database': 'connected',
+            'tables': len(tables),
+            'tables_list': tables
+        }, 200
+    except Exception as e:
+        return {
+            'status': 'unhealthy', 
+            'database': 'disconnected',
+            'error': str(e)
+        }, 500
+
 @app.route('/')
 def login():
     return render_template('ventanas/login.html')
@@ -410,4 +461,7 @@ def reebokquestion():
 if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))
+    
+    # En desarrollo, usar el servidor de desarrollo de Flask
+    # En producción, Railway usará Gunicorn
     app.run(host='0.0.0.0', port=port, debug=False)

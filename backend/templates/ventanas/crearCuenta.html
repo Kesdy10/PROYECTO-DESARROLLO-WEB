@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Mi Cuenta - Don Gato</title>
   <link rel="stylesheet" href="/static/css/estilos.css">
+  <link rel="stylesheet" href="/static/css/datos.css">
 </head>
 <body>
     <header>
@@ -15,59 +16,79 @@
 <main class="perfil">
     <br>
     <h1>Crear una Cuenta</h1><br>
-    <form class="formulario-perfil" style="display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; row-gap: 25px; align-items: center;">
+    
+    <!-- Mostrar mensajes de error/éxito -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div style="padding: 10px; margin: 10px 0; border-radius: 5px; text-align: center;
+                     background-color: {% if category == 'error' %}#f8d7da{% else %}#d1e7dd{% endif %};
+                     color: {% if category == 'error' %}#721c24{% else %}#155724{% endif %};">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <form class="formulario-perfil" method="POST" style="display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; row-gap: 25px; align-items: center;">
 
         <div style="display:flex; align-items:center; gap:8px;">
-            <label style="font-size:22px; width:120px;" for="Apellidos">Apellidos:</label>
-            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="Apellidos" placeholder="Escribe aqui">
+            <label style="font-size:22px; width:120px;" for="apellidos">Apellidos:</label>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="apellidos" name="apellidos" placeholder="Escribe aqui">
         </div>
 
         <div style="display:flex; align-items:center; gap:8px;">
-            <label style="font-size:22px; width:120px;" for="Nombres">Nombres:</label>
-            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="Nombres" placeholder="Escribe aqui">
+            <label style="font-size:22px; width:120px;" for="nombres">Nombres:</label>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="nombres" name="nombres" placeholder="Escribe aqui" required>
         </div>
 
         <div style="display:flex; align-items:center; gap:8px;">
-            <label style="font-size:22px; width:120px;" for="Correo">Correo:</label>
-            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="Correo" placeholder="Escribe aqui">
+            <label style="font-size:22px; width:120px;" for="correo">Correo:</label>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="email" id="correo" name="email" placeholder="Escribe aqui" required>
         </div>
 
         <div style="display:flex; align-items:center; gap:8px;">
-            <label style="font-size:22px; width:120px;" for="Telefono">Telefono:</label>
-            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="Telefono" placeholder="Escribe aqui">
+            <label style="font-size:22px; width:120px;" for="telefono">Telefono:</label>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="telefono" name="telefono" placeholder="Escribe aqui">
         </div>
 
         <div style="display:flex; align-items:center; gap:8px;">
-            <label style="font-size:22px; width:120px;" for="fecha">Fecha de nacimiento:</label>
-            <input style="font-size:18px; flex:1;" type="date" id="fecha" name="fecha" value="2004-03-08">
+            <label style="font-size:22px; width:120px;" for="nacimiento">Nacimiento:</label>
+            <input style="font-size:18px; border:none; border-bottom:2px solid black; flex:1;" type="date" id="nacimiento" name="nacimiento">
         </div>
 
         <div style="display:flex; align-items:center; gap:8px;">
-            <label style="font-size:22px; width:120px;">Género:</label>
-            <div style="display:flex; gap:15px; flex:1;">
-                <label style="font-size:22px; color:grey;"><input type="radio" name="Genero" value="M"> Masculino</label>
-                <label style="font-size:22px; color:grey;"><input type="radio" name="Genero" value="F"> Femenino</label>
-            </div>
+            <label style="font-size:22px; width:120px;" for="direccion">Direccion:</label>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="direccion" name="direccion" placeholder="Escribe aqui">
         </div>
 
-        <div style="grid-column:1 / -1; display:flex; align-items:center; gap:8px;">
-            <label style="font-size:22px; width:120px;" for="direccion">Dirección:</label>
-            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="direccion" placeholder="Escribe aqui">
-        </div> <br>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <label style="font-size:22px; width:120px;" for="password">Contraseña:</label>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="password" id="password" name="password" placeholder="Escribe aqui" required>
+        </div>
 
-        <div style="display:flex; justify-content:flex-end; gap:15px; margin-top:20px;">
-            <button style="font-size:22px; background-color:rgb(100, 243, 100); border:none; padding:8px 20px; cursor:pointer;" type="button">Crear cuenta</button>
-            <button style="font-size:22px; background-color:rgb(231, 80, 80); border:none; padding:8px 20px; cursor:pointer;" type="button"
-            onclick="window.location.href='login.html';">Salir</button>
-        </div><br>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <label style="font-size:22px; width:120px;" for="confirm_password">Confirmar:</label>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="password" id="confirm_password" placeholder="Confirmar contraseña" required>
+        </div>
+
+        <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 15px; margin-top: 20px;">
+            <button type="submit" style="font-size:22px; padding:8px 20px; border:none; cursor:pointer; border-radius:8px; background-color:rgb(100, 243, 100);">
+                Crear
+            </button>
+            <a href="login.html">
+                <button type="button" style="font-size:22px; padding:8px 20px; border:none; cursor:pointer; border-radius:8px; background-color:rgb(231, 80, 80);">
+                    Cancelar
+                </button>
+            </a>
+        </div>
 
     </form>
 </main>
 
-
-  <footer>
+<footer>
     &copy; 2025 Don Gato. Todos los derechos reservados.
-  </footer>
-  <script src="/static/js/script.js"></script>
+</footer>
+<script src="/static/js/script.js"></script>
 </body>
 </html>

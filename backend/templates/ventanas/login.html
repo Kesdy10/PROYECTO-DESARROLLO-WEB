@@ -14,29 +14,44 @@
     </header>
 <main>
     <div class="form">        
-        <h1 > Inicio de sesión </h1>
+        <h1> Inicio de sesión </h1>
+        
+        <!-- Mostrar mensajes de error/éxito -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" style="padding: 10px; margin: 10px 0; border-radius: 5px; 
+                         background-color: {% if category == 'error' %}#f8d7da{% else %}#d1e7dd{% endif %};
+                         color: {% if category == 'error' %}#721c24{% else %}#155724{% endif %};">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST">
             <div class="usuario" style="font-size: 35px;">
-                <input type="text" style="font-size: 20px;" placeholder="Usuario" name="usuario" required>
+                <input type="email" style="font-size: 20px;" placeholder="Email" name="email" required>
             </div>
             <div class="user" style="font-size: 25px; text-align:center;">
-                <input type="password" id="contrasena" style="font-size: 20px; margin-bottom: 30px;" placeholder="Contraseña" name="contrasena" required>
+                <input type="password" id="contrasena" style="font-size: 20px; margin-bottom: 30px;" placeholder="Contraseña" name="password" required>
             </div>
-            <div style="font-size: 25px; text-align:center;"> <input type="checkbox" onclick="togglePassword()">  Mostrar contraseña </div>  
-
+            <div style="font-size: 25px; text-align:center;"> 
+                <input type="checkbox" onclick="togglePassword()"> Mostrar contraseña 
+            </div>  
             
-        <br>
-        <div>
-            <a href="index.html">
-                <button type="button" style="font-size: 25px; margin-bottom: 80px; background-color: yellowgreen;"> Ingresar </button>
-            </a>
-        </div>
+            <br>
+            <div>
+                <button type="submit" style="font-size: 25px; margin-bottom: 80px; background-color: yellowgreen;"> Ingresar </button>
+            </div>
+        </form>
+        
         <div>
             <h1 style ="font-size: 20px;"> ¿No tienes una cuenta? </h1>
-            <a href="crearCuenta.html">
+            <a href="{{ url_for('crear_cuenta') }}">
                 <button type="button" style="font-size: 25px; margin-bottom: 30px; background-color: cadetblue;"> Crear una cuenta </button>
             </a>
         </div>
-        </form>
     </div>
 </main>
 

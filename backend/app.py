@@ -1,34 +1,236 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
+import os
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
+
+# Configuración de la base de datos
+app.config['SECRET_KEY'] = 'tu_clave_secreta_aqui'  # Cámbiala por una clave segura
+
+# Usar PostgreSQL de Railway
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://default:default@localhost/default')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+# Modelo de Usuario
+class Usuario(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombres = db.Column(db.String(100), nullable=False)
+    apellidos = db.Column(db.String(100), nullable=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    telefono = db.Column(db.String(20), nullable=True)
+    nacimiento = db.Column(db.Date, nullable=True)
+    direccion = db.Column(db.String(200), nullable=True)
+    password_hash = db.Column(db.String(255), nullable=False)
+    
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+    
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+# Modelo de Mensaje
+class Mensaje(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    correo = db.Column(db.String(120), nullable=False)
+    mensaje = db.Column(db.Text, nullable=False)
+    fecha_envio = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Mensaje {self.nombre}>'
+
+# Inicializar la base de datos
+with app.app_context():
+    db.create_all()
 
 # VENTANAS
 @app.route('/')
 def login():
     return render_template('ventanas/login.html')
 
-@app.route('/login.html')
+@app.route('/login.html', methods=['GET', 'POST'])
 def login_page():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        
+        usuario = Usuario.query.filter_by(email=email).first()
+        
+        if usuario and usuario.check_password(password):
+            session['user_id'] = usuario.id
+            session['user_name'] = usuario.nombres + ' ' + (usuario.apellidos or '')
+            flash('¡Bienvenido!', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Email o contraseña incorrectos', 'error')
+    
     return render_template('ventanas/login.html')
 
-@app.route('/crearCuenta.html')
+@app.route('/crearCuenta.html', methods=['GET', 'POST'])
 def crear_cuenta():
+    if request.method == 'POST':
+        nombres = request.form['nombres']
+        apellidos = request.form.get('apellidos', '')
+        email = request.form['email']
+        telefono = request.form.get('telefono', '')
+        nacimiento = request.form.get('nacimiento')
+        direccion = request.form.get('direccion', '')
+        password = request.form['password']
+        
+        # Verificar si el usuario ya existe
+        if Usuario.query.filter_by(email=email).first():
+            flash('Este email ya está registrado', 'error')
+            return render_template('ventanas/crearCuenta.html')
+        
+        # Crear nuevo usuario
+        nuevo_usuario = Usuario(
+            nombres=nombres,
+            apellidos=apellidos,
+            email=email,
+            telefono=telefono,
+            direccion=direccion
+        )
+        
+        # Manejar fecha de nacimiento
+        if nacimiento:
+            from datetime import datetime
+            nuevo_usuario.nacimiento = datetime.strptime(nacimiento, '%Y-%m-%d').date()
+        
+        nuevo_usuario.set_password(password)
+        
+        db.session.add(nuevo_usuario)
+        db.session.commit()
+        
+        flash('Cuenta creada exitosamente. ¡Ahora puedes iniciar sesión!', 'success')
+        return redirect(url_for('login_page'))
+    
     return render_template('ventanas/crearCuenta.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash('Has cerrado sesión', 'info')
+    return redirect(url_for('login_page'))
 
 @app.route('/index.html')
 def index():
+    if 'user_id' not in session:
+        flash('Debes iniciar sesión primero', 'error')
+        return redirect(url_for('login_page'))
     return render_template('ventanas/index.html')
 
-@app.route('/cuenta.html')
+@app.route('/cuenta.html', methods=['GET', 'POST'])
 def cuenta():
-    return render_template('ventanas/cuenta.html')
+    if 'user_id' not in session:
+        flash('Debes iniciar sesión primero', 'error')
+        return redirect(url_for('login_page'))
+    
+    usuario = Usuario.query.get(session['user_id'])
+    
+    if request.method == 'POST':
+        # Obtener datos del formulario
+        nombres = request.form.get('nombres')
+        apellidos = request.form.get('apellidos')
+        email = request.form.get('email')
+        telefono = request.form.get('telefono')
+        nacimiento = request.form.get('nacimiento')
+        direccion = request.form.get('direccion')
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+        
+        # Validaciones
+        if not nombres or not email:
+            flash('Los campos Nombres y Correo son obligatorios', 'error')
+            return render_template('ventanas/cuenta.html', usuario=usuario)
+        
+        # Verificar si el email ya existe (excepto el del usuario actual)
+        existing_user = Usuario.query.filter(Usuario.email == email, Usuario.id != usuario.id).first()
+        if existing_user:
+            flash('Este correo ya está registrado por otro usuario', 'error')
+            return render_template('ventanas/cuenta.html', usuario=usuario)
+        
+        # Validar contraseñas si se proporcionaron
+        if new_password:
+            if new_password != confirm_password:
+                flash('Las contraseñas no coinciden', 'error')
+                return render_template('ventanas/cuenta.html', usuario=usuario)
+            if len(new_password) < 6:
+                flash('La contraseña debe tener al menos 6 caracteres', 'error')
+                return render_template('ventanas/cuenta.html', usuario=usuario)
+        
+        # Actualizar datos del usuario
+        usuario.nombres = nombres
+        usuario.apellidos = apellidos
+        usuario.email = email
+        usuario.telefono = telefono
+        usuario.direccion = direccion
+        
+        # Convertir fecha de nacimiento
+        if nacimiento:
+            try:
+                from datetime import datetime
+                usuario.nacimiento = datetime.strptime(nacimiento, '%Y-%m-%d').date()
+            except ValueError:
+                flash('Formato de fecha inválido', 'error')
+                return render_template('ventanas/cuenta.html', usuario=usuario)
+        
+        # Actualizar contraseña si se proporcionó
+        if new_password:
+            usuario.set_password(new_password)
+        
+        try:
+            db.session.commit()
+            session['user_name'] = nombres  # Actualizar nombre en sesión
+            flash('Datos actualizados exitosamente', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash('Error al actualizar los datos', 'error')
+    
+    return render_template('ventanas/cuenta.html', usuario=usuario)
 
-@app.route('/contacto.html')
+@app.route('/contacto.html', methods=['GET', 'POST'])
 def contacto():
+    if 'user_id' not in session:
+        flash('Debes iniciar sesión primero', 'error')
+        return redirect(url_for('login_page'))
+    
+    if request.method == 'POST':
+        nombre = request.form.get('nombre')
+        correo = request.form.get('correo')
+        mensaje_texto = request.form.get('mensaje')
+        
+        # Validaciones
+        if not nombre or not correo or not mensaje_texto:
+            flash('Todos los campos son obligatorios', 'error')
+            return render_template('ventanas/contacto.html')
+        
+        # Crear nuevo mensaje
+        nuevo_mensaje = Mensaje(
+            nombre=nombre,
+            correo=correo,
+            mensaje=mensaje_texto
+        )
+        
+        try:
+            db.session.add(nuevo_mensaje)
+            db.session.commit()
+            flash('¡Mensaje enviado exitosamente! Te contactaremos pronto.', 'success')
+            return redirect(url_for('contacto'))
+        except Exception as e:
+            db.session.rollback()
+            flash('Error al enviar el mensaje. Inténtalo de nuevo.', 'error')
+    
     return render_template('ventanas/contacto.html')
 
 @app.route('/carrito.html')
 def carrito():
+    if 'user_id' not in session:
+        flash('Debes iniciar sesión primero', 'error')
+        return redirect(url_for('login_page'))
     return render_template('ventanas/carrito.html')
 
 # MARCAS

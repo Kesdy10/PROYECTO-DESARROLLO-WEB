@@ -9,21 +9,28 @@
 <body>
   <header>
     <div class="izquierda">
-      <a href="index.html">
-  <img src="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}" alt="Logo">
+      <a href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='img/encabezado/logo.jpeg') }}" alt="Logo">
       </a>
       <h1>DON GATO</h1>
     </div>
 
     <div class="derecha">
-      <a href="cuenta.html" class="cuenta">
-  <img src="{{ url_for('static', filename='img/encabezado/perfil.png') }}" alt="Cuenta">
+      <!-- Mostrar nombre del usuario logueado -->
+      <div style="color: white; font-size: 18px; margin-right: 15px; display: flex; align-items: center;">
+          ¡Hola, {{ session.user_name }}! 
+          <a href="{{ url_for('logout') }}" style="margin-left: 10px; color: #ffcccc; text-decoration: none; font-size: 14px;">
+              [Cerrar sesión]
+          </a>
+      </div>
+      <a href="{{ url_for('cuenta') }}" class="cuenta">
+        <img src="{{ url_for('static', filename='img/encabezado/perfil.png') }}" alt="Cuenta">
       </a>
-      <a href="contacto.html" class="contacto">
-  <img src="{{ url_for('static', filename='img/encabezado/mensaje.png') }}" alt="Contacto">
+      <a href="{{ url_for('contacto') }}" class="contacto">
+        <img src="{{ url_for('static', filename='img/encabezado/mensaje.png') }}" alt="Contacto">
       </a>
-      <a href="carrito.html" class="carrito">
-  <img src="{{ url_for('static', filename='img/encabezado/carrito.png') }}" alt="Carrito">
+      <a href="{{ url_for('carrito') }}" class="carrito">
+        <img src="{{ url_for('static', filename='img/encabezado/carrito.png') }}" alt="Carrito">
       </a>
     </div>
   </header>
@@ -31,51 +38,80 @@
 <main class="perfil">
     <br>
     <h1>Mi Cuenta</h1><br>
-    <form class="formulario-perfil">
+    
+    <!-- Mostrar mensajes de error/éxito -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div style="padding: 10px; margin: 10px 0; border-radius: 5px; text-align: center;
+                     background-color: {% if category == 'error' %}#f8d7da{% else %}#d1e7dd{% endif %};
+                     color: {% if category == 'error' %}#721c24{% else %}#155724{% endif %};">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <form class="formulario-perfil" method="POST">
 
         <div style="display:flex; align-items:center; gap:8px;">
-            <label style="font-size:22px; width:120px;" for="Apellidos">Apellidos:</label>
-            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="Apellidos">
+            <label style="font-size:22px; width:120px;" for="apellidos">Apellidos:</label>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" 
+                   type="text" id="apellidos" name="apellidos" value="{{ usuario.apellidos or '' }}">
         </div>
 
         <div style="display:flex; align-items:center; gap:8px;">
-            <label style="font-size:22px; width:120px;" for="Nombres">Nombres:</label>
-            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="Nombres">
+            <label style="font-size:22px; width:120px;" for="nombres">Nombres:</label>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" 
+                   type="text" id="nombres" name="nombres" value="{{ usuario.nombres }}" required>
         </div>
 
         <div style="display:flex; align-items:center; gap:8px;">
-            <label style="font-size:22px; width:120px;" for="Correo">Correo:</label>
-            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="Correo">
+            <label style="font-size:22px; width:120px;" for="correo">Correo:</label>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" 
+                   type="email" id="correo" name="email" value="{{ usuario.email }}" required>
         </div>
 
         <div style="display:flex; align-items:center; gap:8px;">
-            <label style="font-size:22px; width:120px;" for="Telefono">Teléfono:</label>
-            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="Telefono">
+            <label style="font-size:22px; width:120px;" for="telefono">Teléfono:</label>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" 
+                   type="text" id="telefono" name="telefono" value="{{ usuario.telefono or '' }}">
         </div>
 
         <div style="display:flex; align-items:center; gap:8px;">
-            <label style="font-size:22px; width:120px;" for="fecha">Fecha de nacimiento:</label>
-            <input style="font-size:18px; flex:1;" type="date" id="fecha" name="fecha" value="2004-03-08">
+            <label style="font-size:22px; width:120px;" for="nacimiento">Fecha de nacimiento:</label>
+            <input style="font-size:18px; border:none; border-bottom:2px solid black; flex:1;" 
+                   type="date" id="nacimiento" name="nacimiento" value="{{ usuario.nacimiento.strftime('%Y-%m-%d') if usuario.nacimiento else '' }}">
         </div>
 
         <div style="display:flex; align-items:center; gap:8px;">
-            <label style="font-size:22px; width:120px;">Género:</label>
-            <div class="genero-group">
-                <label style="font-size:22px; color:grey;"><input type="radio" name="Genero" value="M"> Masculino</label>
-                <label style="font-size:22px; color:grey;"><input type="radio" name="Genero" value="F"> Femenino</label>
-            </div>
-        </div>
-
-        <div style="grid-column:1 / -1; display:flex; align-items:center; gap:8px;">
             <label style="font-size:22px; width:120px;" for="direccion">Dirección:</label>
-            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="text" id="direccion">
-        </div> <br>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" 
+                   type="text" id="direccion" name="direccion" value="{{ usuario.direccion or '' }}">
+        </div>
 
-        <div class="botones-perfil">
-            <button style="font-size:22px; background-color:rgb(100, 243, 100); border:none; padding:8px 20px; cursor:pointer;" type="button">Actualizar</button>
-            <button style="font-size:22px; background-color:rgb(231, 80, 80); border:none; padding:8px 20px; cursor:pointer;"
-            onclick="if(confirm('¿Estas seguro que quieres borrar la cuenta?')){alert('Cuenta borrada exitosamente')}">Borrar</button>
-        </div><br>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <label style="font-size:22px; width:120px;" for="new_password">Nueva contraseña:</label>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" 
+                   type="password" id="new_password" name="new_password" placeholder="Dejar vacío para no cambiar">
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px;">
+            <label style="font-size:22px; width:120px;" for="confirm_password">Confirmar:</label>
+            <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" 
+                   type="password" id="confirm_password" name="confirm_password" placeholder="Confirmar nueva contraseña">
+        </div>
+
+        <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 15px; margin-top: 20px;">
+            <button type="submit" style="font-size:22px; padding:8px 20px; border:none; cursor:pointer; border-radius:8px; background-color:rgb(100, 243, 100);">
+                Actualizar
+            </button>
+            <a href="{{ url_for('index') }}">
+                <button type="button" style="font-size:22px; padding:8px 20px; border:none; cursor:pointer; border-radius:8px; background-color:rgb(231, 80, 80);">
+                    Cancelar
+                </button>
+            </a>
+        </div>
 
     </form>
 </main>

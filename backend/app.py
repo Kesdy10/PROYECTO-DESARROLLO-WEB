@@ -237,11 +237,15 @@ def recuperar_password():
         nueva_password = request.form.get('nueva_password')
         confirmar_password = request.form.get('confirmar_password')
         
-        # Validaciones básicas (igual que crear cuenta)
+        # Validaciones básicas
         if not email or not nueva_password or not confirmar_password:
             return render_template('ventanas/recuperarPassword.html', error='Todos los campos son requeridos')
         
-        # Validar que las contraseñas coincidan (igual que crear cuenta)
+        # Validar longitud mínima de contraseña
+        if len(nueva_password) < 5:
+            return render_template('ventanas/recuperarPassword.html', error='La contraseña debe tener al menos 5 caracteres')
+        
+        # Validar que las contraseñas coincidan
         if nueva_password != confirmar_password:
             return render_template('ventanas/recuperarPassword.html', error='Las contraseñas no coinciden')
         
@@ -255,11 +259,9 @@ def recuperar_password():
         usuario.set_password(nueva_password)
         db.session.commit()
         
-    return render_template('ventanas/recuperarPassword.html', exito='Contraseña actualizada exitosamente. Ya puedes iniciar sesión')
+        return render_template('ventanas/recuperarPassword.html', exito='Contraseña actualizada exitosamente')
     
-    return render_template('ventanas/recuperarPassword.html')
-
-@app.route('/crearCuenta.html', methods=['GET', 'POST'])
+    return render_template('ventanas/recuperarPassword.html')@app.route('/crearCuenta.html', methods=['GET', 'POST'])
 def crear_cuenta():
     if request.method == 'POST':
         nombres = request.form.get('nombres')
@@ -381,6 +383,25 @@ def cuenta():
             return render_template('ventanas/cuenta.html', usuario=usuario, error='Error al actualizar los datos')
     
     return render_template('ventanas/cuenta.html', usuario=usuario)
+
+@app.route('/borrar_cuenta')
+def borrar_cuenta():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    usuario = Usuario.query.get(session['user_id'])
+    
+    if usuario:
+        try:
+            db.session.delete(usuario)
+            db.session.commit()
+            session.clear()
+            return redirect(url_for('login'))
+        except Exception as e:
+            db.session.rollback()
+            return render_template('ventanas/cuenta.html', usuario=usuario, error='Error al borrar la cuenta')
+    
+    return redirect(url_for('login'))
 
 @app.route('/contacto.html', methods=['GET', 'POST'])
 def contacto():

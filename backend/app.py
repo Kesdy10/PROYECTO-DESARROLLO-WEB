@@ -394,7 +394,7 @@ def contacto():
         
         # Validaciones
         if not nombre or not correo or not mensaje_texto:
-            return render_template('ventanas/contacto.html')
+            return render_template('ventanas/contacto.html', error='Todos los campos son requeridos')
         
         # Crear nuevo mensaje
         nuevo_mensaje = Mensaje(
@@ -406,9 +406,10 @@ def contacto():
         try:
             db.session.add(nuevo_mensaje)
             db.session.commit()
-            return redirect(url_for('contacto'))
+            return render_template('ventanas/contacto.html', exito='Mensaje enviado exitosamente')
         except Exception as e:
             db.session.rollback()
+            return render_template('ventanas/contacto.html', error='Error al enviar el mensaje')
     
     return render_template('ventanas/contacto.html')
 

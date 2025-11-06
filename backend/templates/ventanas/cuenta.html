@@ -90,19 +90,13 @@
                    type="password" id="confirm_password" name="confirm_password" placeholder="Confirmar nueva contraseña">
         </div>
 
-        <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 15px; margin-top: 20px;">
-            <button type="submit" style="font-size: 25px; margin-bottom: 20px; background-color: yellowgreen;">
-                Actualizar
-            </button>
+        <div style="grid-column: 1 / -1; text-align: right; margin-top: 20px;">
+            <button type="submit" style="font-size: 25px; margin-bottom: 30px; background-color: yellowgreen;">Actualizar</button>
             <a href="{{ url_for('borrar_cuenta') }}">
-                <button type="button" style="font-size: 25px; margin-bottom: 30px; background-color: rgb(198, 73, 73);">
-                    Borrar cuenta
-                </button>
+                <button type="button" style="font-size: 25px; margin-bottom: 30px; background-color: rgb(198, 73, 73);">Borrar cuenta</button>
             </a>
             <a href="{{ url_for('logout') }}">
-                <button type="button" style="font-size: 25px; margin-bottom: 30px; background-color: cadetblue;">
-                    Cerrar sesión
-                </button>
+                <button type="button" style="font-size: 25px; margin-bottom: 30px; background-color: cadetblue;">Cerrar sesión</button>
             </a>
         </div>
 

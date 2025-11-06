@@ -61,22 +61,14 @@
             <input style="font-size:22px; border:none; border-bottom:2px solid black; flex:1;" type="password" id="confirm_password" name="confirm_password" placeholder="Confirmar contraseña" required>
         </div>
 
-        <div style="grid-column: 1 / -1; text-align: center; margin-top: 20px;">
-            <button type="submit" style="font-size: 25px; margin-bottom: 20px; background-color: yellowgreen;">
-                Crear
-            </button>
+        <div style="grid-column: 1 / -1; text-align: right; margin-top: 20px;">
+            <button type="submit" style="font-size: 25px; margin-bottom: 30px; background-color: yellowgreen;">Crear</button>
+            <a href="{{ url_for('login_page') }}">
+                <button type="button" style="font-size: 25px; margin-bottom: 30px; background-color: rgb(198, 73, 73);">Cancelar</button>
+            </a>
         </div>
 
     </form>
-    
-    <div style="text-align: center; margin-bottom: 20px;">
-        <a href="{{ url_for('login_page') }}">
-            <button type="button" style="font-size: 25px; margin-bottom: 30px; background-color: rgb(198, 73, 73);">
-                Cancelar
-            </button>
-        </a>
-    </div>
-
 </main>
 
 <footer>

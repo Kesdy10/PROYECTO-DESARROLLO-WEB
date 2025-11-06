@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
@@ -217,7 +217,7 @@ def login_page():
         
         # Validaciones básicas
         if not email or not password:
-            return render_template('ventanas/login.html')
+            return render_template('ventanas/login.html', error='Debes ingresar email y contraseña')
         
         usuario = Usuario.query.filter_by(email=email).first()
         
@@ -225,8 +225,8 @@ def login_page():
             session['user_id'] = usuario.id
             session['user_name'] = usuario.nombres + ' ' + (usuario.apellidos or '')
             return redirect(url_for('index'))
-        # Credenciales inválidas: volver a mostrar login (sin mensajes flash)
-        return render_template('ventanas/login.html')
+        # Credenciales inválidas
+        return render_template('ventanas/login.html', error='Email o contraseña incorrectos')
     
     return render_template('ventanas/login.html')
 
@@ -239,27 +239,23 @@ def recuperar_password():
         
         # Validaciones básicas (igual que crear cuenta)
         if not email or not nueva_password or not confirmar_password:
-            flash('Todos los campos son requeridos', 'error')
-            return render_template('ventanas/recuperarPassword.html')
+            return render_template('ventanas/recuperarPassword.html', error='Todos los campos son requeridos')
         
         # Validar que las contraseñas coincidan (igual que crear cuenta)
         if nueva_password != confirmar_password:
-            flash('Las contraseñas no coinciden', 'error')
-            return render_template('ventanas/recuperarPassword.html')
+            return render_template('ventanas/recuperarPassword.html', error='Las contraseñas no coinciden')
         
         # Buscar usuario por email
         usuario = Usuario.query.filter_by(email=email).first()
         
         if not usuario:
-            flash('No existe una cuenta con ese email', 'error')
-            return render_template('ventanas/recuperarPassword.html')
+            return render_template('ventanas/recuperarPassword.html', error='No existe una cuenta con ese email')
         
         # Actualizar contraseña en la base de datos
         usuario.set_password(nueva_password)
         db.session.commit()
         
-        flash('Contraseña actualizada exitosamente. Ya puedes iniciar sesión.', 'success')
-        return redirect(url_for('login_page'))
+    return render_template('ventanas/recuperarPassword.html', exito='Contraseña actualizada exitosamente. Ya puedes iniciar sesión')
     
     return render_template('ventanas/recuperarPassword.html')
 
@@ -277,15 +273,15 @@ def crear_cuenta():
         
         # Validaciones básicas
         if not nombres or not email or not password:
-            return render_template('ventanas/crearCuenta.html')
+            return render_template('ventanas/crearCuenta.html', error='Todos los campos obligatorios son requeridos')
             
         # Validar confirmación de contraseña
         if password != confirm_password:
-            return render_template('ventanas/crearCuenta.html')
+            return render_template('ventanas/crearCuenta.html', error='Las contraseñas no coinciden')
         
         # Verificar si el usuario ya existe
         if Usuario.query.filter_by(email=email).first():
-            return render_template('ventanas/crearCuenta.html')
+            return render_template('ventanas/crearCuenta.html', error='Ya existe una cuenta con ese email')
         
         # Crear nuevo usuario
         nuevo_usuario = Usuario(
@@ -305,10 +301,10 @@ def crear_cuenta():
         try:
             db.session.add(nuevo_usuario)
             db.session.commit()
-            return redirect(url_for('login'))
+            return render_template('ventanas/crearCuenta.html', exito='Cuenta creada exitosamente. Ya puedes iniciar sesión')
         except Exception as e:
             db.session.rollback()
-            return render_template('ventanas/crearCuenta.html')
+            return render_template('ventanas/crearCuenta.html', error='Error al crear la cuenta. Intenta nuevamente')
     
     return render_template('ventanas/crearCuenta.html')
 
@@ -344,19 +340,19 @@ def cuenta():
         
         # Validaciones
         if not nombres or not email:
-            return render_template('ventanas/cuenta.html', usuario=usuario)
+            return render_template('ventanas/cuenta.html', usuario=usuario, error='Nombre y email son obligatorios')
         
         # Verificar si el email ya existe (excepto el del usuario actual)
         existing_user = Usuario.query.filter(Usuario.email == email, Usuario.id != usuario.id).first()
         if existing_user:
-            return render_template('ventanas/cuenta.html', usuario=usuario)
+            return render_template('ventanas/cuenta.html', usuario=usuario, error='Ese email ya está en uso por otra cuenta')
         
         # Validar contraseñas si se proporcionaron
         if new_password:
             if new_password != confirm_password:
-                return render_template('ventanas/cuenta.html', usuario=usuario, error_password='Las contraseñas no coinciden')
+                return render_template('ventanas/cuenta.html', usuario=usuario, error='Las contraseñas no coinciden')
             if len(new_password) < 5:
-                return render_template('ventanas/cuenta.html', usuario=usuario, error_password='La contraseña debe tener al menos 5 caracteres')
+                return render_template('ventanas/cuenta.html', usuario=usuario, error='La contraseña debe tener al menos 5 caracteres')
         
         # Actualizar datos del usuario
         usuario.nombres = nombres
@@ -370,7 +366,7 @@ def cuenta():
             try:
                 usuario.nacimiento = datetime.strptime(nacimiento, '%Y-%m-%d').date()
             except ValueError:
-                return render_template('ventanas/cuenta.html', usuario=usuario)
+                return render_template('ventanas/cuenta.html', usuario=usuario, error='Fecha de nacimiento inválida')
         
         # Actualizar contraseña si se proporcionó
         if new_password:
@@ -379,10 +375,10 @@ def cuenta():
         try:
             db.session.commit()
             session['user_name'] = nombres  # Actualizar nombre en sesión
-            # Redirigir para evitar reenvío de formulario y refrescar datos desde la BD
-            return redirect(url_for('cuenta'))
+            return render_template('ventanas/cuenta.html', usuario=usuario, exito='Datos actualizados correctamente')
         except Exception as e:
             db.session.rollback()
+            return render_template('ventanas/cuenta.html', usuario=usuario, error='Error al actualizar los datos')
     
     return render_template('ventanas/cuenta.html', usuario=usuario)
 

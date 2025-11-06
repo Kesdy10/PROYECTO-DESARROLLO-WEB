@@ -14,21 +14,9 @@
         </h1>
     </header>
 <main>
+    <div id="mensajes-pagina" data-error="{{ error or '' }}" data-exito="" data-redirigir=""></div>
     <div class="form">        
         <h1> Inicio de sesión </h1>
-        
-        <!-- Mostrar mensajes de error/éxito -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}" style="padding: 10px; margin: 10px 0; border-radius: 5px; 
-                         background-color: {% if category == 'error' %}#f8d7da{% else %}#d1e7dd{% endif %};
-                         color: {% if category == 'error' %}#721c24{% else %}#155724{% endif %};">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
         
         <form method="POST" action="/login.html">
             <div class="usuario" style="font-size: 35px;">
@@ -38,7 +26,7 @@
                 <input type="password" id="contrasena" style="font-size: 20px; margin-bottom: 30px;" placeholder="Contraseña" name="password" required>
             </div>
             <div style="font-size: 25px; text-align:center;"> 
-                <input type="checkbox" onclick="togglePassword()"> Mostrar contraseña 
+                <input type="checkbox" data-toggle="contrasena"> Mostrar contraseña 
             </div>  
             
             <br>
@@ -66,5 +54,6 @@
         &copy; 2025 Don Gato. Todos los derechos reservados.
     </footer>
 <script src="/static/js/script.js"></script>
+<script src="/static/js/mensajes.js"></script>
 </body>
 </html>

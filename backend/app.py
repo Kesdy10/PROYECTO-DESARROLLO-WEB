@@ -261,7 +261,9 @@ def recuperar_password():
         
         return render_template('ventanas/recuperarPassword.html', exito='Contraseña actualizada exitosamente')
     
-    return render_template('ventanas/recuperarPassword.html')@app.route('/crearCuenta.html', methods=['GET', 'POST'])
+    return render_template('ventanas/recuperarPassword.html')
+
+@app.route('/crearCuenta.html', methods=['GET', 'POST'])
 def crear_cuenta():
     if request.method == 'POST':
         nombres = request.form.get('nombres')

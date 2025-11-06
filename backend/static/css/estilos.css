@@ -182,22 +182,6 @@ footer {
     box-sizing: border-box;
 }
 
-.btn {
-    font-size: 25px;
-    margin-bottom: 30px;
-    border: none;
-    border-radius: 0;
-    padding: 10px 20px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-}
-
-.btn-verde { background-color: yellowgreen; color: black; }
-.btn-rojo { background-color: rgb(198, 73, 73); color: white; }
-.btn-azul { background-color: cadetblue; color: white; }
-
 @media (max-width: 1200px) {
     .izquierda h1 {
         color: black;

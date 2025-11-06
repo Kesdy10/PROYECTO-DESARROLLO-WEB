@@ -313,19 +313,19 @@ def crear_cuenta():
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('login'))
+    return redirect(url_for('login_page'))
 
 @app.route('/index.html')
 def index():
     if 'user_id' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('login_page'))
     return render_template('ventanas/index.html')
 
 @app.route('/cuenta.html', methods=['GET', 'POST'])
 def cuenta():
     # Si no hay usuario logueado, redirigir a login solo para cuenta
     if 'user_id' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('login_page'))
     
     usuario = Usuario.query.get(session['user_id'])
     
@@ -387,7 +387,7 @@ def cuenta():
 @app.route('/borrar_cuenta')
 def borrar_cuenta():
     if 'user_id' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('login_page'))
     
     usuario = Usuario.query.get(session['user_id'])
     
@@ -396,17 +396,17 @@ def borrar_cuenta():
             db.session.delete(usuario)
             db.session.commit()
             session.clear()
-            return redirect(url_for('login'))
+            return redirect(url_for('login_page'))
         except Exception as e:
             db.session.rollback()
             return render_template('ventanas/cuenta.html', usuario=usuario, error='Error al borrar la cuenta')
     
-    return redirect(url_for('login'))
+    return redirect(url_for('login_page'))
 
 @app.route('/contacto.html', methods=['GET', 'POST'])
 def contacto():
     if 'user_id' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('login_page'))
     
     if request.method == 'POST':
         nombre = request.form.get('nombre')

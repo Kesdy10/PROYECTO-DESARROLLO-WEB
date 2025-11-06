@@ -6,21 +6,16 @@ from sqlalchemy import inspect
 import os
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
-
-# Configuración de la base de datos
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'tu_clave_secreta_muy_segura_para_railway_2024')  
-
-# Configurar base de datos PostgreSQL para Railway
 database_url = os.environ.get('DATABASE_URL')
 if database_url:
-    # Arreglar el protocolo si es necesario (Railway a veces usa postgres:// en lugar de postgresql://)
     if database_url.startswith('postgres://'):
         database_url = database_url.replace('postgres://', 'postgresql://', 1)
     app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-    print(f"✅ Conectando a PostgreSQL: {database_url[:30]}...")
+    print(f"Conectando a BD PostgreSQL: {database_url[:30]}...")
 else:
     # Fallback local a SQLite para evitar errores cuando no hay PostgreSQL local
-    print("❌ No se encontró DATABASE_URL — usando SQLite local (dongato.db)")
+    print("No se encontró DATABASE_URL — usando SQLite local (dongato.db)")
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///dongato.db'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -29,10 +24,9 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_recycle': 300,
     'pool_pre_ping': True
 }
-
 db = SQLAlchemy(app)
 
-# Modelo de Usuario
+# DATOS USUARIO
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombres = db.Column(db.String(100), nullable=False)
@@ -50,7 +44,7 @@ class Usuario(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-# Modelo de Mensaje
+# DATOS MENSAJE
 class Mensaje(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
@@ -61,31 +55,45 @@ class Mensaje(db.Model):
     def __repr__(self):
         return f'<Mensaje {self.nombre}>'
 
-# Modelo de Producto
+# DATOS PRODUCTO
 class Producto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(200), nullable=False)
     marca = db.Column(db.String(50), nullable=False)
     precio = db.Column(db.Integer, nullable=False)
-    tallas_disponibles = db.Column(db.String(200), nullable=False)  # "6,7,8,9,10,11,12"
+    tallas_disponibles = db.Column(db.String(200), nullable=False)  
     imagen_ruta = db.Column(db.String(300), nullable=True)
-    pagina_html = db.Column(db.String(100), nullable=True)  # nikegato.html
+    pagina_html = db.Column(db.String(100), nullable=True)  
     
     def __repr__(self):
         return f'<Producto {self.nombre}>'
     
     def get_tallas(self):
-        """Retorna lista de tallas disponibles como strings (soporta medias tallas)."""
         return [t.strip() for t in self.tallas_disponibles.split(',') if t.strip()]
 
-def seed_or_update_products():
-    """Crea o actualiza productos base con precios únicos dentro de los rangos dados.
-    Es idempotente: si el producto (por pagina_html) existe, actualiza; si no, inserta.
-    """
-    tallas_default = '5.5,6,6.5,7,7.5,8,8.5,9,9.5,10'
+# USUARIO ACTUAL
+def obtener_usuario_actual():
+    if 'user_id' not in session:
+        return None
+    return Usuario.query.get(session['user_id'])
 
+# VALIDACIONES
+def validar_password(password, confirm_password):
+    if len(password) < 5:
+        return False, 'La contraseña debe tener al menos 5 caracteres'
+    if password != confirm_password:
+        return False, 'Las contraseñas no coinciden'
+    return True, None
+
+def email_ya_existe(email, excluir_usuario_id=None):
+    if excluir_usuario_id:
+        return Usuario.query.filter(Usuario.email == email, Usuario.id != excluir_usuario_id).first() is not None
+    return Usuario.query.filter_by(email=email).first() is not None
+
+def seed_or_update_products():
+    tallas_default = '5.5,6,6.5,7,7.5,8,8.5,9,9.5,10'
     productos_def = [
-        # NIKE (existentes)
+        # NIKE
         dict(nombre='Nike Gato SB', marca='Nike', precio=1000, pagina_html='nikegato.html'),
         dict(nombre='Nike Air Jordan 1 Mid', marca='Nike', precio=1400, pagina_html='nikeairjordan1mid.html'),
         dict(nombre='Nike Air Max Nuaxis', marca='Nike', precio=1200, pagina_html='nikeairmaxnuaxis.html'),
@@ -101,7 +109,13 @@ def seed_or_update_products():
         dict(nombre='New Balance 2002R', marca='New Balance', precio=1300, pagina_html='newbalance2002r.html'),
         dict(nombre='New Balance 9060', marca='New Balance', precio=1500, pagina_html='newbalance9060.html'),
         
-        # ADIDAS (omitido en BD por ahora, precios manejados en templates)
+        # ADIDAS
+        dict(nombre='Adidas Samba', marca='Adidas', precio=1100, pagina_html='adidassamba.html'),
+        dict(nombre='Adidas Kaptir', marca='Adidas', precio=700, pagina_html='adidaskaptir.html'),
+        dict(nombre='Adidas Adizero', marca='Adidas', precio=1300, pagina_html='adidasadizero.html'),
+        dict(nombre='Adidas Campus', marca='Adidas', precio=800, pagina_html='adidascampus.html'),
+        dict(nombre='Adidas Gazelle', marca='Adidas', precio=900, pagina_html='adidasgazelle.html'),
+        dict(nombre='Adidas Ultraboost', marca='Adidas', precio=1800, pagina_html='adidasultraboost.html'),
 
         # CONVERSE
         dict(nombre='Converse Chuck 70', marca='Converse', precio=650, pagina_html='conversechuck70.html'),
@@ -162,9 +176,9 @@ def seed_or_update_products():
 
     if inserted or updated:
         db.session.commit()
-    print(f"✅ Productos: insertados={inserted}, actualizados={updated}, total={Producto.query.count()}")
+    print(f"Productos: insertados={inserted}, actualizados={updated}, total={Producto.query.count()}")
 
-# Inicializar la base de datos
+# CONEXION BD
 try:
     with app.app_context():
         db.create_all()
@@ -175,13 +189,9 @@ except Exception as e:
 # VENTANAS
 @app.route('/health')
 def health_check():
-    """Endpoint de verificación de salud para Railway"""
     try:
-        # Verificar conexión a la base de datos
         with app.app_context():
             result = db.session.execute('SELECT 1').scalar()
-            
-        # Verificar que las tablas existen
         inspector = inspect(db.engine)
         tables = inspector.get_table_names()
         
@@ -203,7 +213,6 @@ def health_check():
 def internal_error(error):
     db.session.rollback()
     return render_template('ventanas/login.html'), 500
-
 
 @app.route('/')
 def login():
@@ -241,13 +250,10 @@ def recuperar_password():
         if not email or not nueva_password or not confirmar_password:
             return render_template('ventanas/recuperarPassword.html', error='Todos los campos son requeridos')
         
-        # Validar longitud mínima de contraseña
-        if len(nueva_password) < 5:
-            return render_template('ventanas/recuperarPassword.html', error='La contraseña debe tener al menos 5 caracteres')
-        
-        # Validar que las contraseñas coincidan
-        if nueva_password != confirmar_password:
-            return render_template('ventanas/recuperarPassword.html', error='Las contraseñas no coinciden')
+        # Validar contraseña
+        es_valida, error_msg = validar_password(nueva_password, confirmar_password)
+        if not es_valida:
+            return render_template('ventanas/recuperarPassword.html', error=error_msg)
         
         # Buscar usuario por email
         usuario = Usuario.query.filter_by(email=email).first()
@@ -279,12 +285,13 @@ def crear_cuenta():
         if not nombres or not email or not password:
             return render_template('ventanas/crearCuenta.html', error='Todos los campos obligatorios son requeridos')
             
-        # Validar confirmación de contraseña
-        if password != confirm_password:
-            return render_template('ventanas/crearCuenta.html', error='Las contraseñas no coinciden')
+        # Validar contraseña
+        es_valida, error_msg = validar_password(password, confirm_password)
+        if not es_valida:
+            return render_template('ventanas/crearCuenta.html', error=error_msg)
         
         # Verificar si el usuario ya existe
-        if Usuario.query.filter_by(email=email).first():
+        if email_ya_existe(email):
             return render_template('ventanas/crearCuenta.html', error='Ya existe una cuenta con ese email')
         
         # Crear nuevo usuario
@@ -325,11 +332,9 @@ def index():
 
 @app.route('/cuenta.html', methods=['GET', 'POST'])
 def cuenta():
-    # Si no hay usuario logueado, redirigir a login solo para cuenta
-    if 'user_id' not in session:
+    usuario = obtener_usuario_actual()
+    if not usuario:
         return redirect(url_for('login_page'))
-    
-    usuario = Usuario.query.get(session['user_id'])
     
     if request.method == 'POST':
         # Obtener datos del formulario (normalizados)
@@ -347,16 +352,14 @@ def cuenta():
             return render_template('ventanas/cuenta.html', usuario=usuario, error='Nombre y email son obligatorios')
         
         # Verificar si el email ya existe (excepto el del usuario actual)
-        existing_user = Usuario.query.filter(Usuario.email == email, Usuario.id != usuario.id).first()
-        if existing_user:
+        if email_ya_existe(email, excluir_usuario_id=usuario.id):
             return render_template('ventanas/cuenta.html', usuario=usuario, error='Ese email ya está en uso por otra cuenta')
         
         # Validar contraseñas si se proporcionaron
         if new_password:
-            if new_password != confirm_password:
-                return render_template('ventanas/cuenta.html', usuario=usuario, error='Las contraseñas no coinciden')
-            if len(new_password) < 5:
-                return render_template('ventanas/cuenta.html', usuario=usuario, error='La contraseña debe tener al menos 5 caracteres')
+            es_valida, error_msg = validar_password(new_password, confirm_password)
+            if not es_valida:
+                return render_template('ventanas/cuenta.html', usuario=usuario, error=error_msg)
         
         # Actualizar datos del usuario
         usuario.nombres = nombres
@@ -388,26 +391,24 @@ def cuenta():
 
 @app.route('/borrar_cuenta')
 def borrar_cuenta():
-    if 'user_id' not in session:
+    usuario = obtener_usuario_actual()
+    if not usuario:
         return redirect(url_for('login_page'))
     
-    usuario = Usuario.query.get(session['user_id'])
-    
-    if usuario:
-        try:
-            db.session.delete(usuario)
-            db.session.commit()
-            session.clear()
-            return redirect(url_for('login_page'))
-        except Exception as e:
-            db.session.rollback()
-            return render_template('ventanas/cuenta.html', usuario=usuario, error='Error al borrar la cuenta')
-    
+    try:
+        db.session.delete(usuario)
+        db.session.commit()
+        session.clear()
+        return redirect(url_for('login_page'))
+    except Exception as e:
+        db.session.rollback()
+        return render_template('ventanas/cuenta.html', usuario=usuario, error='Error al borrar la cuenta')
     return redirect(url_for('login_page'))
 
 @app.route('/contacto.html', methods=['GET', 'POST'])
 def contacto():
-    if 'user_id' not in session:
+    usuario = obtener_usuario_actual()
+    if not usuario:
         return redirect(url_for('login_page'))
     
     if request.method == 'POST':
@@ -415,17 +416,14 @@ def contacto():
         correo = request.form.get('correo')
         mensaje_texto = request.form.get('mensaje')
         
-        # Validaciones
+        # VALIDACION MENSAJE
         if not nombre or not correo or not mensaje_texto:
             return render_template('ventanas/contacto.html', error='Todos los campos son requeridos')
-        
-        # Crear nuevo mensaje
         nuevo_mensaje = Mensaje(
             nombre=nombre,
             correo=correo,
             mensaje=mensaje_texto
         )
-        
         try:
             db.session.add(nuevo_mensaje)
             db.session.commit()
@@ -433,15 +431,11 @@ def contacto():
         except Exception as e:
             db.session.rollback()
             return render_template('ventanas/contacto.html', error='Error al enviar el mensaje')
-    
     return render_template('ventanas/contacto.html')
 
 @app.route('/carrito.html')
 def carrito():
-    # Obtener carrito de la sesión (funciona con o sin login)
     items = session.get('carrito', [])
-
-    # Agrupar por (nombre, talla) para acumular cantidades
     grupos = {}
     for it in items:
         nombre = it.get('nombre')
@@ -462,17 +456,14 @@ def carrito():
             }
 
     carrito_agregado = list(grupos.values())
-    
-    # Obtener datos del usuario si está logueado
-    usuario = None
-    if 'user_id' in session:
-        usuario = Usuario.query.get(session['user_id'])
-    
+
+    # DATOS USUARIO
+    usuario = obtener_usuario_actual()
     return render_template('ventanas/carrito.html', carrito_items=carrito_agregado, usuario=usuario)
 
 @app.route('/agregar_carrito', methods=['POST'])
 def agregar_carrito():
-    # Obtener datos del formulario
+    # DATOS FORMULARIO
     nombre_producto = request.form.get('nombre_producto')
     talla = request.form.get('talla')
     precio = request.form.get('precio', '0')
@@ -502,11 +493,9 @@ def confirmar_pedido():
     
     if not carrito_items:
         return redirect(url_for('carrito'))
-    
-    # Limpiar carrito
+    # LIMPIAR CARRITO
     session['carrito'] = []
     session.modified = True
-    
     return redirect(url_for('carrito'))
 
 # MARCAS
@@ -720,6 +709,5 @@ def reebokquestion():
     return render_template('productosReebok/reebokquestion.html', producto=producto)
 
 if __name__ == '__main__':
-    import os
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)

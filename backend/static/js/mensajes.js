@@ -1,7 +1,5 @@
-// Manejador genérico de mensajes de página y confirmación de pedido
 (function(){
   document.addEventListener('DOMContentLoaded', function(){
-    // Mensajes de página (éxito / error / redirección opcional)
     const holder = document.getElementById('mensajes-pagina');
     if (holder) {
       const err = holder.dataset.error || '';
@@ -20,7 +18,7 @@
       }
     }
 
-    // Confirmación del carrito
+    // CONFIRMACION ORDEN
     const btn = document.getElementById('btnConfirmarPedido');
     const form = document.getElementById('formConfirmar');
     const userBox = document.getElementById('datos-envio');

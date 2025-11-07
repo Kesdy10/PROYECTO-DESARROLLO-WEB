@@ -182,6 +182,8 @@ footer {
     box-sizing: border-box;
 }
 
+
+
 @media (max-width: 1200px) {
     .izquierda h1 {
         color: black;

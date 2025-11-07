@@ -31,9 +31,9 @@
 .carrusel {
     background: none;
     width: 430px;
-    max-width: calc(100vw - 40px);
+    max-width: 95%;
     height: 370px;
-    max-height: calc(100vw - 40px);
+    max-height: 95vw;
     position: relative;
     overflow: hidden;
     margin-bottom: 20px;

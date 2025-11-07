@@ -218,15 +218,11 @@ def internal_error(error):
 
 # APARECELA LOGIN AL EJECUTAR
 @app.route('/')
-def root():
-    return redirect(url_for('login_page'))
+def login():
+    return render_template('ventanas/login.html')
 
 @app.route('/login.html', methods=['GET', 'POST'])
 def login_page():
-    # Si el usuario ya está logueado, redirigir al index
-    if 'user_id' in session:
-        return redirect(url_for('index'))
-
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -238,17 +234,10 @@ def login_page():
         usuario = Usuario.query.filter_by(email=email).first()
         
         if usuario and usuario.check_password(password):
-            # Limpiar sesión anterior si existe
-            session.clear()
-            # Establecer nueva sesión
             session['user_id'] = usuario.id
             session['user_name'] = usuario.nombres + ' ' + (usuario.apellidos or '')
-            print(f"Login exitoso para usuario: {email}")  # Log para debug
             return redirect(url_for('index'))
-        
-        print(f"Intento fallido de login para: {email}")  # Log para debug
         return render_template('ventanas/login.html', error='Email o contraseña incorrectos')
-    
     return render_template('ventanas/login.html')
 
 # RECUPERAR PASSWORD

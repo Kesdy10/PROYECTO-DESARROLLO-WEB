@@ -14,7 +14,7 @@ if database_url:
     app.config['SQLALCHEMY_DATABASE_URI'] = database_url
     print(f"Conectando a BD PostgreSQL: {database_url[:30]}...")
 else:
-    # Fallback local a SQLite para evitar errores cuando no hay PostgreSQL local
+    # FALL BACK LOCAL
     print("No se encontró DATABASE_URL — usando SQLite local (dongato.db)")
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///dongato.db'
 
@@ -77,7 +77,7 @@ def obtener_usuario_actual():
         return None
     return Usuario.query.get(session['user_id'])
 
-# VALIDACIONES
+# VALIDACION DE PASSWORD
 def validar_password(password, confirm_password):
     if len(password) < 5:
         return False, 'La contraseña debe tener al menos 5 caracteres'
@@ -85,11 +85,13 @@ def validar_password(password, confirm_password):
         return False, 'Las contraseñas no coinciden'
     return True, None
 
+#VERIFICAR EMAIL EXISTENTE
 def email_ya_existe(email, excluir_usuario_id=None):
     if excluir_usuario_id:
         return Usuario.query.filter(Usuario.email == email, Usuario.id != excluir_usuario_id).first() is not None
     return Usuario.query.filter_by(email=email).first() is not None
 
+# ACTUALIZA O CREA PRODUCTOS
 def seed_or_update_products():
     tallas_default = '5.5,6,6.5,7,7.5,8,8.5,9,9.5,10'
     productos_def = [
@@ -146,7 +148,7 @@ def seed_or_update_products():
     for p in productos_def:
         existente = Producto.query.filter_by(pagina_html=p['pagina_html']).first()
         if existente:
-            # Actualizar precio y campos básicos si cambiaron
+            # ACTUALIZAR SI CAMBIA DATO
             cambios = 0
             if existente.precio != p['precio']:
                 existente.precio = p['precio']
@@ -186,7 +188,7 @@ try:
 except Exception as e:
     print(f"Error al inicializar BD: {e}")
 
-# VENTANAS
+# VENTANA DE FUNCION RAILWAY
 @app.route('/health')
 def health_check():
     try:
@@ -208,12 +210,13 @@ def health_check():
             'error': str(e)
         }, 500
 
-# Manejo global de errores
+# MANEJO DE ERRORES EN DB
 @app.errorhandler(500)
 def internal_error(error):
     db.session.rollback()
     return render_template('ventanas/login.html'), 500
 
+# APARECELA LOGIN AL EJECUTAR
 @app.route('/')
 def login():
     return render_template('ventanas/login.html')
@@ -224,7 +227,7 @@ def login_page():
         email = request.form.get('email')
         password = request.form.get('password')
         
-        # Validaciones básicas
+        # VALIDACIONES LOGIN
         if not email or not password:
             return render_template('ventanas/login.html', error='Debes ingresar email y contraseña')
         
@@ -234,11 +237,10 @@ def login_page():
             session['user_id'] = usuario.id
             session['user_name'] = usuario.nombres + ' ' + (usuario.apellidos or '')
             return redirect(url_for('index'))
-        # Credenciales inválidas
         return render_template('ventanas/login.html', error='Email o contraseña incorrectos')
-    
     return render_template('ventanas/login.html')
 
+# RECUPERAR PASSWORD
 @app.route('/recuperar-password.html', methods=['GET', 'POST'])
 def recuperar_password():
     if request.method == 'POST':
@@ -246,29 +248,25 @@ def recuperar_password():
         nueva_password = request.form.get('nueva_password')
         confirmar_password = request.form.get('confirmar_password')
         
-        # Validaciones básicas
+        # VALIDACION PASSWORD
         if not email or not nueva_password or not confirmar_password:
             return render_template('ventanas/recuperarPassword.html', error='Todos los campos son requeridos')
-        
-        # Validar contraseña
         es_valida, error_msg = validar_password(nueva_password, confirmar_password)
         if not es_valida:
             return render_template('ventanas/recuperarPassword.html', error=error_msg)
-        
-        # Buscar usuario por email
+
+        # BUSCAR USUARIO POR EMAIL
         usuario = Usuario.query.filter_by(email=email).first()
-        
         if not usuario:
             return render_template('ventanas/recuperarPassword.html', error='No existe una cuenta con ese email')
         
-        # Actualizar contraseña en la base de datos
+        # ACTUALIZAR CONTRA DB
         usuario.set_password(nueva_password)
         db.session.commit()
-        
         return render_template('ventanas/recuperarPassword.html', exito='Contraseña actualizada exitosamente')
-    
     return render_template('ventanas/recuperarPassword.html')
 
+# CREAR CUENTA
 @app.route('/crearCuenta.html', methods=['GET', 'POST'])
 def crear_cuenta():
     if request.method == 'POST':

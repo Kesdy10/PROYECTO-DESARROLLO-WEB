@@ -350,27 +350,25 @@ def cuenta():
             if not es_valida:
                 return render_template('ventanas/cuenta.html', usuario=usuario, error=error_msg)
         
-        # Actualizar datos del usuario
+        # ACTUALIZAR DATOS
         usuario.nombres = nombres
         usuario.apellidos = apellidos
         usuario.email = email
         usuario.telefono = telefono
         usuario.direccion = direccion
         
-        # Convertir fecha de nacimiento
         if nacimiento:
             try:
                 usuario.nacimiento = datetime.strptime(nacimiento, '%Y-%m-%d').date()
             except ValueError:
                 return render_template('ventanas/cuenta.html', usuario=usuario, error='Fecha de nacimiento invalida')
         
-        # Actualizar contrasena si se proporciono
         if new_password:
             usuario.set_password(new_password)
         
         try:
             db.session.commit()
-            session['user_name'] = nombres  # Actualizar nombre en sesion
+            session['user_name'] = nombres  
             return render_template('ventanas/cuenta.html', usuario=usuario, exito='Datos actualizados correctamente')
         except Exception as e:
             db.session.rollback()
@@ -378,6 +376,7 @@ def cuenta():
     
     return render_template('ventanas/cuenta.html', usuario=usuario)
 
+# BORRAR CUENTA
 @app.route('/borrar_cuenta')
 def borrar_cuenta():
     usuario = obtener_usuario_actual()
@@ -443,7 +442,6 @@ def carrito():
                 'precio': precio,
                 'cantidad': 1,
             }
-
     carrito_agregado = list(grupos.values())
 
     # DATOS USUARIO

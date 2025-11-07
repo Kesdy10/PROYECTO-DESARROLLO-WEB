@@ -458,11 +458,9 @@ def agregar_carrito():
     if not nombre_producto or not talla:
         return redirect(request.referrer)
 
-    # Inicializar carrito si no existe
     if 'carrito' not in session:
         session['carrito'] = []
 
-    # Agregar producto al carrito
     item = {
         'nombre': nombre_producto,
         'talla': talla,
@@ -471,7 +469,6 @@ def agregar_carrito():
 
     session['carrito'].append(item)
     session.modified = True
-
     return redirect(request.referrer)
 
 @app.route('/confirmar_pedido', methods=['POST'])

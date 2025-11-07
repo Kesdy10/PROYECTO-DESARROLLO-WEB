@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // CHECKBOX CONTRASENA
+    // CHECKBOX CONTRASEÑA
     document.querySelectorAll('[data-toggle]').forEach(cb => {
         const targetId = cb.getAttribute('data-toggle');
         cb.addEventListener('change', () => {

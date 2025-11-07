@@ -4,18 +4,21 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from sqlalchemy import inspect
 import os
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde .env
+load_dotenv()
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'tu_clave_secreta_muy_segura_para_railway_2024')  
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 database_url = os.environ.get('DATABASE_URL')
 if database_url:
     if database_url.startswith('postgres://'):
         database_url = database_url.replace('postgres://', 'postgresql://', 1)
     app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-    print(f"Conectando a BD PostgreSQL: {database_url[:30]}...")
+    print("Conectando a BD PostgreSQL...")
 else:
-    # FALL BACK LOCAL
-    print("No se encontro DATABASE_URL — usando SQLite local (dongato.db)")
+    print("No se encontro DATABASE_URL — usando SQLite local")
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///dongato.db'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

@@ -29,13 +29,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (btnAnterior) btnAnterior.onclick = anterior;
     if (btnSiguiente) btnSiguiente.onclick = siguiente;
     
-    //Teclas
+    //TECLAS
     document.addEventListener('keydown', function(e) {
         if (e.key === "ArrowLeft") anterior();
         if (e.key === "ArrowRight") siguiente();
     });
 
-    //Tallas
+    //SELECCIONAR TALLA
     const tallas = document.querySelectorAll('.talla-item');
     const btnAgregar = document.getElementById('agregar-carrito');
     let tallaSeleccionada = null;
@@ -45,8 +45,8 @@ document.addEventListener('DOMContentLoaded', function() {
             tallas.forEach(t => t.classList.remove('selected'));
             talla.classList.add('selected');
             tallaSeleccionada = talla.dataset.talla;
-            
-            // TALLA SELECCIONADA
+
+            // HABILITAR BOTON
             const tallaInput = document.getElementById('talla-seleccionada');
             if (tallaInput) {
                 tallaInput.value = tallaSeleccionada;

@@ -1,4 +1,4 @@
-//TALLAS
+//TALLAS ACTIVACION
 document.addEventListener('DOMContentLoaded', function() {
     const botones = document.querySelectorAll('.datos-producto button');
     if (botones.length) {

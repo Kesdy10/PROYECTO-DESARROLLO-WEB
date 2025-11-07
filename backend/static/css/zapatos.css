@@ -281,11 +281,3 @@
         max-height: 180px;
     }
 }
-body:after {
-    font-family: Arial, sans-serif;
-    display: block;
-    text-align: center;
-    font-size: 0.9rem;
-    color: #888;
-    margin-top: 12px;
-}

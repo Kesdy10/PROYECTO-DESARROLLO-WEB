@@ -33,12 +33,6 @@
   <div id="mensajes-pagina" data-error="{{ error or '' }}" data-exito="{{ exito or '' }}" data-redirigir=""></div>
     <br>
     <h1>Mi Cuenta</h1><br>
-
-    {% if error_password %}
-      <div style="background:#ffe5e5; color:#b10000; border:1px solid #ffb3b3; padding:10px 14px; border-radius:8px; margin-bottom:16px; font-size:18px;">
-        {{ error_password }}
-      </div>
-    {% endif %}
     
     <form class="formulario-perfil" method="POST">
 

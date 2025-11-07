@@ -1,3 +1,4 @@
+//CONFIRMACIONES
 (function(){
   document.addEventListener('DOMContentLoaded', function(){
     const holder = document.getElementById('mensajes-pagina');

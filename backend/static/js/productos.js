@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const carruselImagenes = document.querySelector('.carrusel-imagenes');
     if (!carruselImagenes) return;
     
-    //Carrusel
+    //CARRUSEL
     const imagenes = document.querySelectorAll('.carrusel-imagenes img');
     let indice = 0;
     
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
             talla.classList.add('selected');
             tallaSeleccionada = talla.dataset.talla;
             
-            // Actualizar el campo hidden del formulario
+            // TALLA SELECCIONADA
             const tallaInput = document.getElementById('talla-seleccionada');
             if (tallaInput) {
                 tallaInput.value = tallaSeleccionada;
@@ -58,7 +58,4 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-
-    // El formulario se envía automáticamente cuando se hace clic en "Agregar al carrito"
-    // Ya no necesitamos el event listener del botón porque es un submit button
 });

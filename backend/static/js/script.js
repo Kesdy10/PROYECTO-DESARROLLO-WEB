@@ -1,13 +1,5 @@
-// Contraseña: función legacy por compatibilidad
-function togglePassword() {
-    var input = document.getElementById("contrasena");
-    if (!input) return;
-    input.type = (input.type === "password") ? "text" : "password";
-}
-
-// Inicializaciones ligeras y sin dependencias del DOM
+//TALLAS
 document.addEventListener('DOMContentLoaded', function() {
-    // Botones de selección (simple highlight)
     const botones = document.querySelectorAll('.datos-producto button');
     if (botones.length) {
         botones.forEach(boton => {
@@ -24,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Checkboxes con data-toggle para mostrar/ocultar contraseñas
+    // CHECKBOX CONTRASEÑA
     document.querySelectorAll('[data-toggle]').forEach(cb => {
         const targetId = cb.getAttribute('data-toggle');
         cb.addEventListener('change', () => {

@@ -15,7 +15,7 @@ if database_url:
     print(f"Conectando a BD PostgreSQL: {database_url[:30]}...")
 else:
     # FALL BACK LOCAL
-    print("No se encontró DATABASE_URL — usando SQLite local (dongato.db)")
+    print("No se encontro DATABASE_URL — usando SQLite local (dongato.db)")
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///dongato.db'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -80,7 +80,7 @@ def obtener_usuario_actual():
 # VALIDACION DE PASSWORD
 def validar_password(password, confirm_password):
     if len(password) < 5:
-        return False, 'La contraseña debe tener al menos 5 caracteres'
+        return False, 'La contrasena debe tener al menos 5 caracteres'
     if password != confirm_password:
         return False, 'Las contraseñas no coinciden'
     return True, None
@@ -279,20 +279,16 @@ def crear_cuenta():
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
         
-        # Validaciones básicas
+        # VALIDACIONES
         if not nombres or not email or not password:
             return render_template('ventanas/crearCuenta.html', error='Todos los campos obligatorios son requeridos')
-            
-        # Validar contraseña
         es_valida, error_msg = validar_password(password, confirm_password)
         if not es_valida:
             return render_template('ventanas/crearCuenta.html', error=error_msg)
         
-        # Verificar si el usuario ya existe
         if email_ya_existe(email):
             return render_template('ventanas/crearCuenta.html', error='Ya existe una cuenta con ese email')
         
-        # Crear nuevo usuario
         nuevo_usuario = Usuario(
             nombres=nombres,
             apellidos=apellidos,
@@ -301,20 +297,17 @@ def crear_cuenta():
             direccion=direccion
         )
         
-        # Manejar fecha de nacimiento
         if nacimiento:
             nuevo_usuario.nacimiento = datetime.strptime(nacimiento, '%Y-%m-%d').date()
-        
         nuevo_usuario.set_password(password)
         
         try:
             db.session.add(nuevo_usuario)
             db.session.commit()
-            return render_template('ventanas/crearCuenta.html', exito='Cuenta creada exitosamente. Ya puedes iniciar sesión')
+            return render_template('ventanas/crearCuenta.html', exito='Cuenta creada exitosamente. Ya puedes iniciar sesion')
         except Exception as e:
             db.session.rollback()
             return render_template('ventanas/crearCuenta.html', error='Error al crear la cuenta. Intenta nuevamente')
-    
     return render_template('ventanas/crearCuenta.html')
 
 @app.route('/logout')
@@ -335,7 +328,7 @@ def cuenta():
         return redirect(url_for('login_page'))
     
     if request.method == 'POST':
-        # Obtener datos del formulario (normalizados)
+        # OBTENER DATOS
         nombres = (request.form.get('nombres') or '').strip()
         apellidos = (request.form.get('apellidos') or '').strip()
         email = (request.form.get('email') or '').strip()
@@ -345,15 +338,13 @@ def cuenta():
         new_password = (request.form.get('new_password') or '').strip()
         confirm_password = (request.form.get('confirm_password') or '').strip()
         
-        # Validaciones
+        # VALIDACION
         if not nombres or not email:
             return render_template('ventanas/cuenta.html', usuario=usuario, error='Nombre y email son obligatorios')
         
-        # Verificar si el email ya existe (excepto el del usuario actual)
         if email_ya_existe(email, excluir_usuario_id=usuario.id):
-            return render_template('ventanas/cuenta.html', usuario=usuario, error='Ese email ya está en uso por otra cuenta')
+            return render_template('ventanas/cuenta.html', usuario=usuario, error='Ese email ya esta en uso por otra cuenta')
         
-        # Validar contraseñas si se proporcionaron
         if new_password:
             es_valida, error_msg = validar_password(new_password, confirm_password)
             if not es_valida:
@@ -371,15 +362,15 @@ def cuenta():
             try:
                 usuario.nacimiento = datetime.strptime(nacimiento, '%Y-%m-%d').date()
             except ValueError:
-                return render_template('ventanas/cuenta.html', usuario=usuario, error='Fecha de nacimiento inválida')
+                return render_template('ventanas/cuenta.html', usuario=usuario, error='Fecha de nacimiento invalida')
         
-        # Actualizar contraseña si se proporcionó
+        # Actualizar contrasena si se proporciono
         if new_password:
             usuario.set_password(new_password)
         
         try:
             db.session.commit()
-            session['user_name'] = nombres  # Actualizar nombre en sesión
+            session['user_name'] = nombres  # Actualizar nombre en sesion
             return render_template('ventanas/cuenta.html', usuario=usuario, exito='Datos actualizados correctamente')
         except Exception as e:
             db.session.rollback()

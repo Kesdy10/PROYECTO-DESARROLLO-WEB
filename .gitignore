@@ -3,13 +3,13 @@
 *.sqlite
 *.sqlite3
 
-# Cache de Python
+# Cache Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# Entornos virtuales
+# Entorno virtual
 venv/
 env/
 .env

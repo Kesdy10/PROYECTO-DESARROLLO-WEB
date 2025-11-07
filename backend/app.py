@@ -4,21 +4,18 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from sqlalchemy import inspect
 import os
-from dotenv import load_dotenv
-
-# Cargar variables de entorno desde .env
-load_dotenv()
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'tu_clave_secreta_muy_segura_para_railway_2024')  
 database_url = os.environ.get('DATABASE_URL')
 if database_url:
     if database_url.startswith('postgres://'):
         database_url = database_url.replace('postgres://', 'postgresql://', 1)
     app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-    print("Conectando a BD PostgreSQL...")
+    print(f"Conectando a BD PostgreSQL: {database_url[:30]}...")
 else:
-    print("No se encontro DATABASE_URL — usando SQLite local")
+    # FALL BACK LOCAL
+    print("No se encontro DATABASE_URL — usando SQLite local (dongato.db)")
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///dongato.db'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -221,11 +218,15 @@ def internal_error(error):
 
 # APARECELA LOGIN AL EJECUTAR
 @app.route('/')
-def login():
-    return render_template('ventanas/login.html')
+def root():
+    return redirect(url_for('login_page'))
 
 @app.route('/login.html', methods=['GET', 'POST'])
 def login_page():
+    # Si el usuario ya está logueado, redirigir al index
+    if 'user_id' in session:
+        return redirect(url_for('index'))
+
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -237,10 +238,17 @@ def login_page():
         usuario = Usuario.query.filter_by(email=email).first()
         
         if usuario and usuario.check_password(password):
+            # Limpiar sesión anterior si existe
+            session.clear()
+            # Establecer nueva sesión
             session['user_id'] = usuario.id
             session['user_name'] = usuario.nombres + ' ' + (usuario.apellidos or '')
+            print(f"Login exitoso para usuario: {email}")  # Log para debug
             return redirect(url_for('index'))
+        
+        print(f"Intento fallido de login para: {email}")  # Log para debug
         return render_template('ventanas/login.html', error='Email o contraseña incorrectos')
+    
     return render_template('ventanas/login.html')
 
 # RECUPERAR PASSWORD
@@ -694,9 +702,6 @@ def reebokphasecourt():
 def reebokquestion():
     producto = Producto.query.filter_by(pagina_html='reebokquestion.html').first()
     return render_template('productosReebok/reebokquestion.html', producto=producto)
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

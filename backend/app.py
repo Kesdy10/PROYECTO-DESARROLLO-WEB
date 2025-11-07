@@ -12,10 +12,10 @@ if database_url:
     if database_url.startswith('postgres://'):
         database_url = database_url.replace('postgres://', 'postgresql://', 1)
     app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-    print(f"Conectando a BD PostgreSQL: {database_url[:30]}...")
+    print("Conectando a BD PostgreSQL...")
 else:
     # FALL BACK LOCAL
-    print("No se encontro DATABASE_URL — usando SQLite local (dongato.db)")
+    print("Usando SQLite local")
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///dongato.db'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

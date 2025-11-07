@@ -37,7 +37,7 @@
         const nom = userBox.dataset.nombre || '';
         const cor = userBox.dataset.correo || '';
         const tel = userBox.dataset.telefono || 'No especificado';
-        const mensaje = `Se enviará a:\n\nDirección: ${dir}\n\nNombre: ${nom}\nCorreo: ${cor}\nTeléfono: ${tel}`;
+        const mensaje = `Se enviará a:\n\nDirección: ${dir}\nNombre: ${nom}\nCorreo: ${cor}\nTeléfono: ${tel}`;
         if (confirm(mensaje + "\n\n¿Deseas confirmar el pedido?")) {
           form.submit();
         }
